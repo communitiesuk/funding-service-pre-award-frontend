@@ -44,11 +44,11 @@ def build_assets():
 
     # Copy css
     os.makedirs("./app/static/styles")
-    shutil.copyfile("static/src/styles/tasklist.css", "./app/static/styles/tasklist.css")
+    shutil.copyfile("apply/static/src/styles/tasklist.css", "./app/static/styles/tasklist.css")
 
     # Copy over JS source
     os.makedirs("./app/static/js")
-    shutil.copyfile("static/src/js/fsd_cookies.js", "./app/static/js/fsd_cookies.js")
+    shutil.copyfile("apply/static/src/js/fsd_cookies.js", "./app/static/js/fsd_cookies.js")
 
     print("Deleting temp files")
     # Deletes temp. files.
