@@ -6,16 +6,16 @@ from bs4 import BeautifulSoup
 from apply.default.data import RoundStatus
 from apply.models.application_display_mapping import ApplicationMapping
 from apply.models.fund import Fund
-from tests.api_data.test_data import (
+from tests.apply_tests.api_data.test_data import (
     SUBMITTED_APPLICATION,
     TEST_APPLICATION_SUMMARIES,
     TEST_APPLICATIONS,
     TEST_DISPLAY_DATA,
     TEST_FUNDS_DATA,
 )
-from tests.utils import get_language_cookie_value
+from tests.apply_tests.utils import get_language_cookie_value
 
-file = open("tests/api_data/endpoint_data.json")
+file = open("tests/apply_tests/api_data/endpoint_data.json")
 data = json.loads(file.read())
 TEST_APPLICATION_EN = TEST_APPLICATIONS[0]
 TEST_APPLICATION_CY = TEST_APPLICATIONS[1]
@@ -26,22 +26,22 @@ TEST_APPLICATION_DISPLAY_RESPONSE = data["fund_store/funds/funding-service-desig
 @pytest.fixture
 def mock_applications(mocker):
     mocker.patch(
-        "app.default.application_routes.get_application_data",
+        "apply.default.application_routes.get_application_data",
         return_value=TEST_APPLICATION_EN,
     )
     mocker.patch(
-        "app.default.application_routes.determine_round_status",
+        "apply.default.application_routes.determine_round_status",
         return_value=RoundStatus(False, False, True),
     )
     mocker.patch(
-        "app.default.application_routes.get_application_display_config",
+        "apply.default.application_routes.get_application_display_config",
         return_value=[ApplicationMapping.from_dict(section) for section in TEST_APPLICATION_DISPLAY_RESPONSE],
     )
 
 
 def test_tasklist_route(flask_test_client, mocker, mock_login, mock_applications):
     mocker.patch(
-        "app.default.application_routes.get_application_data",
+        "apply.default.application_routes.get_application_data",
         return_value=TEST_APPLICATION_EN,
     )
     response = flask_test_client.get("tasklist/test-application-id", follow_redirects=True)
@@ -53,7 +53,7 @@ def test_tasklist_route(flask_test_client, mocker, mock_login, mock_applications
 
 def test_tasklist_route_after_deadline(flask_test_client, mocker, mock_login, mock_applications):
     mocker.patch(
-        "app.default.application_routes.determine_round_status",
+        "apply.default.application_routes.determine_round_status",
         return_value=RoundStatus(True, False, False),
     )
     response = flask_test_client.get("tasklist/test-application-id", follow_redirects=False)
@@ -63,20 +63,20 @@ def test_tasklist_route_after_deadline(flask_test_client, mocker, mock_login, mo
 
 def test_tasklist_for_submit_application_route(flask_test_client, mocker, mock_login):
     mocker.patch(
-        "app.default.application_routes.get_application_data",
+        "apply.default.application_routes.get_application_data",
         return_value=SUBMITTED_APPLICATION,
     )
     mocker.patch(
-        "app.default.application_routes.determine_round_status",
+        "apply.default.application_routes.determine_round_status",
         return_value=RoundStatus(False, False, True),
     )
 
     get_apps_mock = mocker.patch(
-        "app.default.account_routes.search_applications",
+        "apply.default.account_routes.search_applications",
         return_value=TEST_APPLICATION_SUMMARIES,
     )
     mocker.patch(
-        "app.default.account_routes.build_application_data_for_display",
+        "apply.default.account_routes.build_application_data_for_display",
         return_value=TEST_DISPLAY_DATA,
     )
     response = flask_test_client.get("tasklist/test-application-submit", follow_redirects=True)
@@ -114,12 +114,12 @@ def test_language_cookie_update_english_to_welsh(flask_test_client, mocker, mock
 
     # return welsh fund
     mocker.patch(
-        "app.default.application_routes.get_fund_data",
+        "apply.default.application_routes.get_fund_data",
         return_value=Fund.from_dict(TEST_FUNDS_DATA[2]),
     )
     # return welsh application
     mocker.patch(
-        "app.default.application_routes.get_application_data",
+        "apply.default.application_routes.get_application_data",
         return_value=TEST_APPLICATION_CY,
     )
 

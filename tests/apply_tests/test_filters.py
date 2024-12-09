@@ -2,17 +2,16 @@ import datetime
 
 import pytest
 
-import app.filters as filters
-from app import app
+import apply.filters as filters
 
 
-def test_date_format_short_month():
+def test_date_format_short_month(app):
     a_datetime = datetime.datetime(2020, 1, 1, 12, 0, 0)
     with app.test_request_context():
         assert filters.date_format_short_month(a_datetime) == "01 Jan 2020"
 
 
-def test_datetime_format_short_month():
+def test_datetime_format_short_month(app):
     a_datetime = datetime.datetime(2020, 1, 1, 12, 0, 0)
     with app.test_request_context():
         assert filters.datetime_format_short_month(a_datetime) == "01 Jan 2020 at 12:00pm"
@@ -29,7 +28,7 @@ def test_datetime_format_short_month():
         ("2020-12-01T01:00:00", "01 December 2020 at 1:00am"),
     ],
 )
-def test_datetime_format(input_date, expected):
+def test_datetime_format(input_date, expected, app):
     with app.test_request_context():
         assert filters.datetime_format(input_date) == expected
 

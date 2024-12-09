@@ -9,10 +9,10 @@ def application_id():
     return "test_application_id"
 
 
-@patch("app.default.application_routes.get_application_data")
-@patch("app.default.application_routes.get_round_data")
-@patch("app.default.application_routes.get_research_survey_from_store")
-@patch("app.default.application_routes.determine_round_status", lambda x: MagicMock(is_open=True))
+@patch("apply.default.application_routes.get_application_data")
+@patch("apply.default.application_routes.get_round_data")
+@patch("apply.default.application_routes.get_research_survey_from_store")
+@patch("apply.default.application_routes.determine_round_status", lambda x: MagicMock(is_open=True))
 def test_round_research_intro_get(
     mock_get_survey, mock_get_round, mock_get_app, flask_test_client, application_id, mock_login
 ):
@@ -27,11 +27,11 @@ def test_round_research_intro_get(
     assert b"research_opt_in" in response.data
 
 
-@patch("app.default.application_routes.get_application_data")
-@patch("app.default.application_routes.get_round_data")
-@patch("app.default.application_routes.get_research_survey_from_store")
-@patch("app.default.application_routes.post_research_survey_to_store")
-@patch("app.default.application_routes.determine_round_status", lambda x: MagicMock(is_open=True))
+@patch("apply.default.application_routes.get_application_data")
+@patch("apply.default.application_routes.get_round_data")
+@patch("apply.default.application_routes.get_research_survey_from_store")
+@patch("apply.default.application_routes.post_research_survey_to_store")
+@patch("apply.default.application_routes.determine_round_status", lambda x: MagicMock(is_open=True))
 def test_round_research_intro_post(
     mock_post_survey, mock_get_survey, mock_get_round, mock_get_app, flask_test_client, application_id, mock_login
 ):
@@ -52,10 +52,10 @@ def test_round_research_intro_post(
     mock_post_survey.assert_called_once()
 
 
-@patch("app.default.application_routes.get_application_data")
-@patch("app.default.application_routes.get_round_data")
-@patch("app.default.application_routes.get_research_survey_from_store")
-@patch("app.default.application_routes.determine_round_status", lambda x: MagicMock(is_open=True))
+@patch("apply.default.application_routes.get_application_data")
+@patch("apply.default.application_routes.get_round_data")
+@patch("apply.default.application_routes.get_research_survey_from_store")
+@patch("apply.default.application_routes.determine_round_status", lambda x: MagicMock(is_open=True))
 def test_round_research_contact_details_get(
     mock_get_survey, mock_get_round, mock_get_app, flask_test_client, application_id, mock_login
 ):
@@ -73,11 +73,11 @@ def test_round_research_contact_details_get(
     assert b"contact_email" in response.data
 
 
-@patch("app.default.application_routes.get_application_data")
-@patch("app.default.application_routes.get_round_data")
-@patch("app.default.application_routes.get_research_survey_from_store")
-@patch("app.default.application_routes.post_research_survey_to_store")
-@patch("app.default.application_routes.determine_round_status", lambda x: MagicMock(is_open=True))
+@patch("apply.default.application_routes.get_application_data")
+@patch("apply.default.application_routes.get_round_data")
+@patch("apply.default.application_routes.get_research_survey_from_store")
+@patch("apply.default.application_routes.post_research_survey_to_store")
+@patch("apply.default.application_routes.determine_round_status", lambda x: MagicMock(is_open=True))
 def test_round_research_contact_details_post(
     mock_post_survey, mock_get_survey, mock_get_round, mock_get_app, flask_test_client, application_id, mock_login
 ):

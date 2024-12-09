@@ -3,7 +3,7 @@ from datetime import datetime
 from apply.models.application import Application
 from apply.models.application_summary import ApplicationSummary
 from apply.models.round import Round
-from tests.api_data.test_data_forms import COF_TEST_FORMS
+from tests.apply_tests.api_data.test_data_forms import COF_TEST_FORMS
 
 common_round_data = {
     "opens": "2022-09-01T00:00:01",

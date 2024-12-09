@@ -4,9 +4,9 @@ import platform
 import pytest
 from flask import template_rendered
 
-from apply.create_app import create_app
+from app import create_app
 from apply.models.fund import Fund
-from tests.api_data.test_data import TEST_FUNDS_DATA, TEST_ROUNDS_DATA
+from tests.apply_tests.api_data.test_data import TEST_FUNDS_DATA, TEST_ROUNDS_DATA
 
 if platform.system() == "Darwin":
     multiprocessing.set_start_method("fork")  # Required on macOSX
@@ -94,47 +94,47 @@ def templates_rendered(app):
 @pytest.fixture(autouse=True)
 def mock_get_fund_round(mocker):
     mocker.patch(
-        "app.default.account_routes.get_all_funds",
+        "apply.default.account_routes.get_all_funds",
         return_value=TEST_FUNDS_DATA,
     )
     mocker.patch(
-        "app.default.account_routes.get_all_rounds_for_fund",
+        "apply.default.account_routes.get_all_rounds_for_fund",
         return_value=TEST_ROUNDS_DATA,
     )
     mocker.patch(
-        "app.helpers.get_round_data_by_short_names",
+        "apply.helpers.get_round_data_by_short_names",
         return_value=TEST_ROUNDS_DATA[0],
     )
     mocker.patch(
-        "app.helpers.get_fund_data_by_short_name",
+        "apply.helpers.get_fund_data_by_short_name",
         return_value=Fund.from_dict(TEST_FUNDS_DATA[0]),
     )
     mocker.patch(
-        "app.default.routes.get_all_fund_short_names",
+        "apply.default.routes.get_all_fund_short_names",
         return_value=["COF", "NSTF"],
     )
     mocker.patch(
-        "app.helpers.get_all_fund_short_names",
+        "apply.helpers.get_all_fund_short_names",
         return_value=["COF", "NSTF"],
     )
     mocker.patch(
-        "app.helpers.get_default_round_for_fund",
+        "apply.helpers.get_default_round_for_fund",
         return_value=TEST_ROUNDS_DATA[0],
     )
     mocker.patch(
-        "app.default.application_routes.get_round_data",
+        "apply.default.application_routes.get_round_data",
         return_value=TEST_ROUNDS_DATA[0],
     )
     mocker.patch(
-        "app.default.application_routes.get_fund_data",
+        "apply.default.application_routes.get_fund_data",
         return_value=Fund.from_dict(TEST_FUNDS_DATA[0]),
     )
     mocker.patch(
-        "app.default.data.get_round_data_fail_gracefully",
+        "apply.default.data.get_round_data_fail_gracefully",
         return_value=TEST_ROUNDS_DATA[0],
     )
-    mocker.patch("app.default.account_routes.get_lang", return_value="en")
+    mocker.patch("apply.default.account_routes.get_lang", return_value="en")
     mocker.patch(
-        "app.default.application_routes.get_fund_and_round",
+        "apply.default.application_routes.get_fund_and_round",
         return_value=(Fund.from_dict(TEST_FUNDS_DATA[0]), TEST_ROUNDS_DATA[0]),
     )

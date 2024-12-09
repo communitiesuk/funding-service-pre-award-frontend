@@ -17,16 +17,16 @@ from apply.default.data import RoundStatus
 from apply.models.application_summary import ApplicationSummary
 from apply.models.fund import Fund
 from config import Config
-from tests.api_data.test_data import (
+from tests.apply_tests.api_data.test_data import (
     TEST_APPLICATION_SUMMARIES,
     TEST_DISPLAY_DATA,
     TEST_FUNDS_DATA,
     TEST_ROUNDS_DATA,
     common_application_data,
 )
-from tests.utils import get_language_cookie_value
+from tests.apply_tests.utils import get_language_cookie_value
 
-file = open("tests/api_data/endpoint_data.json")
+file = open("tests/apply_tests/api_data/endpoint_data.json")
 data = json.loads(file.read())
 TEST_APPLICATION_STORE_JSON = data[
     "application_store/applications?account_id=" + "test-user&order_by=last_edited&order_rev=1"
@@ -79,16 +79,16 @@ def test_dashboard_route_search_call(
     round_short_name,
     expected_search_params,
 ):
-    request_mock = mocker.patch("app.default.account_routes.request")
+    request_mock = mocker.patch("apply.default.account_routes.request")
     request_mock.args.get = (
         lambda key, default: fund_short_name if key == "fund" else (round_short_name if key == "round" else default)
     )
     get_apps_mock = mocker.patch(
-        "app.default.account_routes.search_applications",
+        "apply.default.account_routes.search_applications",
         return_value=TEST_APPLICATION_SUMMARIES,
     )
     mocker.patch(
-        "app.default.account_routes.build_application_data_for_display",
+        "apply.default.account_routes.build_application_data_for_display",
         return_value=TEST_DISPLAY_DATA,
     )
     response = flask_test_client.get("/account", follow_redirects=True)
@@ -115,11 +115,11 @@ def test_dashboard_template_rendered(
     exp_template_name,
 ):
     mocker.patch(
-        "app.default.account_routes.search_applications",
+        "apply.default.account_routes.search_applications",
         return_value=TEST_APPLICATION_SUMMARIES,
     )
     mocker.patch(
-        "app.default.account_routes.build_application_data_for_display",
+        "apply.default.account_routes.build_application_data_for_display",
         return_value=TEST_DISPLAY_DATA,
     )
 
@@ -138,10 +138,10 @@ def test_dashboard_eoi_suffix(
     eoi_data = deepcopy(TEST_DISPLAY_DATA)
     eoi_data["funds"][0]["fund_data"]["funding_type"] = "EOI"
     mocker.patch(
-        "app.default.account_routes.search_applications",
+        "apply.default.account_routes.search_applications",
         return_value=TEST_APPLICATION_SUMMARIES,
     )
-    mocker.patch("app.default.account_routes.build_application_data_for_display", return_value=eoi_data)
+    mocker.patch("apply.default.account_routes.build_application_data_for_display", return_value=eoi_data)
 
     response = flask_test_client.get("/account", follow_redirects=True)
 
@@ -171,17 +171,17 @@ def test_dashboard_language(
     exp_response_language,
 ):
     mocker.patch(
-        "app.default.account_routes.search_applications",
+        "apply.default.account_routes.search_applications",
         return_value=TEST_APPLICATION_SUMMARIES,
     )
     mocker.patch(
-        "app.default.account_routes.build_application_data_for_display",
+        "apply.default.account_routes.build_application_data_for_display",
         return_value=TEST_DISPLAY_DATA,
     )
-    mocker.patch("app.default.account_routes.get_lang", return_value=requested_language)
+    mocker.patch("apply.default.account_routes.get_lang", return_value=requested_language)
 
     mocker.patch(
-        "app.helpers.get_fund",
+        "apply.helpers.get_fund",
         return_value=Fund.from_dict(
             {
                 "id": "111",
@@ -201,11 +201,11 @@ def test_dashboard_language(
 
 def test_dashboard_route(flask_test_client, mocker, mock_login):
     mocker.patch(
-        "app.default.account_routes.search_applications",
+        "apply.default.account_routes.search_applications",
         return_value=TEST_APPLICATION_SUMMARIES,
     )
     mocker.patch(
-        "app.default.account_routes.build_application_data_for_display",
+        "apply.default.account_routes.build_application_data_for_display",
         return_value=TEST_DISPLAY_DATA,
     )
     response = flask_test_client.get("/account?fund=COF&round=R2W3", follow_redirects=True)
@@ -244,7 +244,7 @@ def test_submitted_dashboard_route_shows_no_application_link(
     flask_test_client, mocker, mock_login, mock_get_fund_round
 ):
     mocker.patch(
-        "app.default.account_routes.get_applications_for_account",
+        "apply.default.account_routes.get_applications_for_account",
         return_value=TEST_SUBMITTED_APPLICATION_STORE_DATA,
     )
     response = flask_test_client.get("/account", follow_redirects=True)
@@ -256,7 +256,7 @@ def test_submitted_dashboard_route_shows_no_application_link(
 
 def test_dashboard_route_no_applications(flask_test_client, mocker, mock_login):
     mocker.patch(
-        "app.default.account_routes.search_applications",
+        "apply.default.account_routes.search_applications",
         return_value=[],
     )
 
@@ -402,11 +402,11 @@ def test_build_application_data_for_display(
     mocker,
 ):
     mocker.patch(
-        "app.default.account_routes.get_all_funds",
+        "apply.default.account_routes.get_all_funds",
         return_value=funds,
     )
     mocker.patch(
-        "app.default.account_routes.get_all_rounds_for_fund",
+        "apply.default.account_routes.get_all_rounds_for_fund",
         new=lambda fund_id, language, as_dict, ttl_hash: [round for round in rounds if round.fund_id == fund_id],
     )
 
@@ -489,7 +489,7 @@ def test_determine_show_language_column(applications, exp_visible):
     ],
 )
 def test_filter_funds_by_short_name(funds, filter_value, expected_count, mocker):
-    mocker.patch("app.default.account_routes.get_all_funds", return_value=funds)
+    mocker.patch("apply.default.account_routes.get_all_funds", return_value=funds)
     result = get_visible_funds(filter_value)
     assert expected_count == len(result)
 
@@ -515,15 +515,15 @@ def test_create_new_application(
     mock_app_store_response = mock.MagicMock()
     mock_app_store_response.status_code = 201
     post_request = mocker.patch(
-        "app.default.account_routes.requests.post",
+        "apply.default.account_routes.requests.post",
         return_value=mock_app_store_response,
     )
-    mocker.patch("app.default.account_routes.get_lang", return_value=cookie_lang)
+    mocker.patch("apply.default.account_routes.get_lang", return_value=cookie_lang)
     mock_fund = mock.MagicMock()
     mock_fund.welsh_available = fund_supports_welsh
-    mocker.patch("app.default.account_routes.get_fund", return_value=mock_fund)
+    mocker.patch("apply.default.account_routes.get_fund", return_value=mock_fund)
 
-    request_mock = mocker.patch("app.default.account_routes.request")
+    request_mock = mocker.patch("apply.default.account_routes.request")
     request_mock.form = mock.MagicMock()
     response = flask_test_client.post("/account/new", follow_redirects=False)
     assert 302 == response.status_code
