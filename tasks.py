@@ -81,7 +81,7 @@ def _traverse_files(path: str, function: callable, extensions: tuple[str]):
 
 
 @task
-def fix_trans_tags(_, path="app/templates"):
+def fix_trans_tags(_, path="apply/templates"):
     return _traverse_files(
         path,
         _remove_whitespace_newlines_from_trans_tags,
@@ -90,7 +90,7 @@ def fix_trans_tags(_, path="app/templates"):
 
 
 @task
-def find_missing_trans(_, path="app/translations/cy/LC_MESSAGES/messages.po"):
+def find_missing_trans(_, path="translations/cy/LC_MESSAGES/messages.po"):
     return _traverse_files(path, _find_missing_translations, (".po",))
 
 
@@ -101,9 +101,9 @@ def pybabel_extract(c):
 
 @task
 def pybabel_update(c):
-    c.run("pybabel update -i messages.pot -d app/translations")
+    c.run("pybabel update -i messages.pot -d translations")
 
 
 @task
 def pybabel_compile(c):
-    c.run("pybabel compile -d app/translations")
+    c.run("pybabel compile -d translations")
