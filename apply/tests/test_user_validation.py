@@ -2,8 +2,8 @@ import json
 
 from bs4 import BeautifulSoup
 
-from app.default.data import RoundStatus
-from app.models.application_display_mapping import ApplicationMapping
+from apply.default.data import RoundStatus
+from apply.models.application_display_mapping import ApplicationMapping
 from config.envs.default import DefaultConfig
 from tests.api_data.test_data import TEST_APPLICATIONS
 

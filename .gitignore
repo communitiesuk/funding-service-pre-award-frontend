@@ -132,3 +132,4 @@ govuk_components
 app/.DS_Store
 axe_reports/
 html/
+static

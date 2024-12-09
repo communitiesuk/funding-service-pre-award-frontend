@@ -5,10 +5,8 @@ import zipfile
 
 
 def build_assets():
-    if os.path.exists("app/static"):
-        print("Assets already built.If you require a rebuild manually run build.build_assets")
-
-        return True
+    if os.path.exists("static"):
+        shutil.rmtree("static")
 
     # Download zips using "url"
     print("Downloading static file zip.")
@@ -20,39 +18,47 @@ def build_assets():
     # in the python application folder for this to work.
     urllib.request.urlretrieve(url, "./govuk_frontend.zip")  # nosec
 
-    print("Deleting old app/static")
+    print("Deleting old static/apply")
 
     # Attempts to delete the old files, states if
     # one doesnt exist.
     try:
-        shutil.rmtree("app/static")
+        shutil.rmtree("static/apply")
     except FileNotFoundError:
-        print("No old app/static to remove.")
+        print("No old static/apply to remove.")
 
-    print("Unzipping file to app/static...")
+    print("Unzipping file to static/apply...")
 
-    # Extracts the previously downloaded zip to /app/static
+    # Extracts the previously downloaded zip to /static/apply
     with zipfile.ZipFile("./govuk_frontend.zip", "r") as zip_ref:
-        zip_ref.extractall("./app/static")
+        zip_ref.extractall("./static/apply")
 
-    print("Moving files from app/static/assets to app/static")
+    print("Moving files from static/apply/assets to static/apply")
 
-    for file_to_move in os.listdir("./app/static/assets"):
-        shutil.move("./app/static/assets/" + file_to_move, "app/static")
+    for file_to_move in os.listdir("./static/apply/assets"):
+        shutil.move("./static/apply/assets/" + file_to_move, "static/apply")
+
+    # FIXME: Sorry - we plan to remove this hack when we have pulled in the assessment frontend and got both
+    #        things using the same version of GOV.UK Frontend. For now, because we use pre-compiled CSS from GOV.UK
+    #        Frontend, it expects assets to be served from a specific URL path (/assets) - so we need to reproduce
+    #        that structure here.
+    print("Copying images and fonts to /static for hard-coded CSS in GOV.UK Frontend")
+    shutil.copytree("static/apply/images", "static/images")
+    shutil.copytree("static/apply/fonts", "static/fonts")
 
     print("Copying css and js from static/src")
 
     # Copy css
-    os.makedirs("./app/static/styles")
-    shutil.copyfile("apply/static/src/styles/tasklist.css", "./app/static/styles/tasklist.css")
+    os.makedirs("./static/apply/styles")
+    shutil.copyfile("apply/static/src/styles/tasklist.css", "./static/apply/styles/tasklist.css")
 
     # Copy over JS source
-    os.makedirs("./app/static/js")
-    shutil.copyfile("apply/static/src/js/fsd_cookies.js", "./app/static/js/fsd_cookies.js")
+    os.makedirs("./static/apply/js")
+    shutil.copyfile("apply/static/src/js/fsd_cookies.js", "./static/apply/js/fsd_cookies.js")
 
     print("Deleting temp files")
     # Deletes temp. files.
-    shutil.rmtree("./app/static/assets")
+    shutil.rmtree("./static/apply/assets")
     os.remove("./govuk_frontend.zip")
 
 

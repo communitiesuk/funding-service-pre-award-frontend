@@ -4,8 +4,8 @@ import platform
 import pytest
 from flask import template_rendered
 
-from app.create_app import create_app
-from app.models.fund import Fund
+from apply.create_app import create_app
+from apply.models.fund import Fund
 from tests.api_data.test_data import TEST_FUNDS_DATA, TEST_ROUNDS_DATA
 
 if platform.system() == "Darwin":

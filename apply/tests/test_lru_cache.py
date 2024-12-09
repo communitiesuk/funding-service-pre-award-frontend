@@ -1,6 +1,6 @@
 import time
 
-from app.default.data import get_all_funds, get_fund_data, get_ttl_hash
+from apply.default.data import get_all_funds, get_fund_data, get_ttl_hash
 
 
 def test_get_fund_data_lru_cache(mocker):

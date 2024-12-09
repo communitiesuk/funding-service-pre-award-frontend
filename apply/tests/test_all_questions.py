@@ -4,7 +4,7 @@ import pytest
 from bs4 import BeautifulSoup
 from werkzeug import test
 
-from app.default.content_routes import determine_all_questions_template_name
+from apply.default.content_routes import determine_all_questions_template_name
 
 
 @pytest.mark.parametrize(

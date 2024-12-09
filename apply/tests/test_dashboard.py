@@ -7,15 +7,15 @@ from unittest.mock import ANY
 import pytest
 from bs4 import BeautifulSoup
 
-from app.default.account_routes import (
+from apply.default.account_routes import (
     build_application_data_for_display,
     determine_show_language_column,
     get_visible_funds,
     update_applications_statuses_for_display,
 )
-from app.default.data import RoundStatus
-from app.models.application_summary import ApplicationSummary
-from app.models.fund import Fund
+from apply.default.data import RoundStatus
+from apply.models.application_summary import ApplicationSummary
+from apply.models.fund import Fund
 from config import Config
 from tests.api_data.test_data import (
     TEST_APPLICATION_SUMMARIES,
@@ -100,10 +100,10 @@ def test_dashboard_route_search_call(
 @pytest.mark.parametrize(
     "query_string,exp_template_name",
     [
-        ("?fund=abc&round=123", "dashboard_single_fund.html"),
-        ("?fund=abc", "dashboard_single_fund.html"),
-        ("?round=123", "dashboard_all.html"),
-        ("", "dashboard_all.html"),
+        ("?fund=abc&round=123", "apply/dashboard_single_fund.html"),
+        ("?fund=abc", "apply/dashboard_single_fund.html"),
+        ("?round=123", "apply/dashboard_all.html"),
+        ("", "apply/dashboard_all.html"),
     ],
 )
 def test_dashboard_template_rendered(

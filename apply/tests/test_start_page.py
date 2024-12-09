@@ -2,8 +2,8 @@ from unittest import mock
 
 import pytest
 
-from app.default.data import RoundStatus, get_default_round_for_fund
-from app.models.round import Round
+from apply.default.data import RoundStatus, get_default_round_for_fund
+from apply.models.round import Round
 
 default_round_fields = {
     "assessment_deadline": "",

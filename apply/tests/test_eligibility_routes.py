@@ -1,5 +1,5 @@
-from app.models.fund import Fund
-from app.models.round import Round
+from apply.models.fund import Fund
+from apply.models.round import Round
 
 default_hsra_round_fields = {
     "opens": "2022-09-01T00:00:01",
