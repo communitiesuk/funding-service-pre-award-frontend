@@ -14,8 +14,9 @@ http:
   # You can specify a custom health check path. The default is "/".
   healthcheck: '/healthcheck'
 
-  # wants to be a list of [assessment., frontend.] - do this in a separate commit when doing copilot deploys
-  alias: frontend.${COPILOT_ENVIRONMENT_NAME}.access-funding.test.levellingup.gov.uk
+  alias:
+    - frontend.${COPILOT_ENVIRONMENT_NAME}.access-funding.test.levellingup.gov.uk
+    - assessment.${COPILOT_ENVIRONMENT_NAME}.access-funding.test.levellingup.gov.uk
 
 # Configuration for your containers and service.
 image:
@@ -49,6 +50,7 @@ network:
 variables:
   ACCOUNT_STORE_API_HOST: "http://fsd-account-store:8080"
   APPLY_HOST: "frontend.${COPILOT_ENVIRONMENT_NAME}.access-funding.test.levellingup.gov.uk"
+  ASSESS_HOST: "assessment.${COPILOT_ENVIRONMENT_NAME}.access-funding.test.levellingup.gov.uk"
   APPLICANT_FRONTEND_HOST: "https://frontend.${COPILOT_ENVIRONMENT_NAME}.access-funding.test.levellingup.gov.uk"  # TODO: remove me when all frontends combined
   COOKIE_DOMAIN: ".test.levellingup.gov.uk"
   FLASK_ENV: ${COPILOT_ENVIRONMENT_NAME}
@@ -111,8 +113,6 @@ environments:
         port: 8080
   uat:
     http:
-      # wants to be a list of [assessment., frontend.] - do this in a separate commit when doing copilot deploys
-      alias: "frontend.${COPILOT_ENVIRONMENT_NAME}.access-funding.test.levellingup.gov.uk"
       target_container: nginx
       healthcheck:
         path: /healthcheck
@@ -141,12 +141,14 @@ environments:
           BASIC_AUTH_PASSWORD: /copilot/${COPILOT_APPLICATION_NAME}/${COPILOT_ENVIRONMENT_NAME}/secrets/BASIC_AUTH_PASSWORD
   prod:
     http:
-      # wants to be a list of [assessment., frontend.] - do this in a separate commit when doing copilot deploys
-      alias: frontend.access-funding.levellingup.gov.uk
+      alias:
+        - "frontend.access-funding.levellingup.gov.uk"
+        - "assessment.access-funding.levellingup.gov.uk"
       hosted_zone: Z0686469NF3ZJTU9I02M
     variables:
       COOKIE_DOMAIN: ".levellingup.gov.uk"
       APPLY_HOST: "frontend.access-funding.levellingup.gov.uk"
+      ASSESS_HOST: "assessment.access-funding.levellingup.gov.uk"
       APPLICANT_FRONTEND_HOST: "https://frontend.access-funding.levellingup.gov.uk"  # TODO: remove me when all frontends combined
       ASSESSMENT_FRONTEND_HOST: "https://assessment.access-funding.levellingup.gov.uk"
       FORMS_SERVICE_PUBLIC_HOST: "https://forms.access-funding.levellingup.gov.uk"
