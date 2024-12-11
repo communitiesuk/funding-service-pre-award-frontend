@@ -1,0 +1,74 @@
+{% from "assess/macros/migration_banner.html" import migration_banner %}
+
+{% extends "assess/base.html" %}
+{% set pageHeading = state.project_name %}
+
+{% block header %}
+{% include "assess/components/header.html" %}
+{% endblock header %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+    {% if migration_banner_enabled %}
+        {{ migration_banner()}}
+    {% endif %}
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post">
+                {{ form.csrf_token }}
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">Change tags</h1>
+                {% if available_tags and (available_tags | length) > 0 %}
+                    <div class="govuk-hint govuk-!-margin-bottom-6">
+                        Select the tags you want to apply to this assessment
+                    </div>
+                    <a href="{{ url_for('tagging_bp.create_tag', fund_id=state.fund_id, round_id=state.round_id) }}"
+                       role="button"
+                       class="govuk-button govuk-button--secondary"
+                       data-qa="create-new-tag">
+                        Create new tag
+                    </a>
+                    <div class="govuk-form-group">
+                        <table class="govuk-table dluhc-table-checkboxes">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Tag name</th>
+                                    <th scope="col" class="govuk-table__header">Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for tag in available_tags %}
+                                    <tr class-govuk-table__row>
+                                        <th scope="row" class="govuk-table__header">
+                                            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                                                <div class="govuk-checkboxes__item">
+                                                    <input class="govuk-checkboxes__input" data-qa="select-tag" id="{{ tag.id }}" name="{{ form.tags.id }}" type="checkbox" value="{{ tag.id }}" {% if tag.associated %} checked {% endif %}>
+                                                    <label class="govuk-label govuk-checkboxes__label" for="{{ tag.id }}">
+                                                        {{ tag.value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{{ tag_config[tag.purpose]['colour'] }} dluhc-tag">{{ tag.purpose }}</strong></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="govuk-body dluhc-body-empty">
+                        There are no tags available
+                    </p>
+                {% endif %}
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button primary-button" data-module="govuk-button" data-qa="save-and-go-back">
+                        Save and go back
+                    </button>
+                    <a class="govuk-link" href="{{ url_for('assessment_bp.application', application_id=application_id) }}">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+</div>
+{% endblock content %}

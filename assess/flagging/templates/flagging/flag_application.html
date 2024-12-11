@@ -1,0 +1,286 @@
+{% extends "assess/base.html" %}
+{% from "assess/macros/theme.html" import theme %}
+{% from "govuk_frontend_jinja/components/label/macro.html" import govukLabel %}
+{%- from "govuk_frontend_jinja/components/table/macro.html" import govukTable -%}
+{%- from "govuk_frontend_jinja/components/fieldset/macro.html" import govukFieldset -%}
+{%- from "govuk_frontend_jinja/components/textarea/macro.html" import govukTextarea -%}
+{%- from "govuk_frontend_jinja/components/checkboxes/macro.html" import govukCheckboxes -%}
+{%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios %}
+{% from "assess/macros/banner_summary.html" import banner_summary %}
+{% from "assess/macros/migration_banner.html" import migration_banner %}
+{% set pageHeading -%}
+{{ "Error: " if form.errors }}Flag application
+{% endset %}
+
+{% block header %}
+{% include "assess/components/header.html" %}
+{% endblock header %}
+
+{% block content %}
+{% if form.errors.get("justification") or form.errors.get("section") or form.errors.get("teams_available") %}
+<div class="govuk-error-summary" data-module="govuk-error-summary">
+    <div role="alert">
+        <h2 class="govuk-error-summary__title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                {% if form.errors.get("justification") %}
+                <li>
+                    <a href=#{{ form.justification.id }}>{{ form.errors.get("justification") | join("\n") }}</a>
+                </li>
+                {% endif %}
+                {% if form.errors.get("section") %}
+                <li>
+                    <a href=#{{ form.section.id }}>{{ form.errors.get("section") | join("\n") }}</a>
+                </li>
+                {% endif %}
+                {% if form.errors.get("teams_available") %}
+                <li>
+                    <a href={{ '#'+ form.teams_available.id }}>{{ form.errors.get("teams_available") | join("\n") }}</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="govuk-grid-row">
+    {% if migration_banner_enabled %}
+        {{ migration_banner() }}
+    {% endif %}
+
+        <div>
+            <div class="govuk-grid-column-two-thirds">
+                <form method="post">
+                    {{ form.csrf_token }}
+                    <h1 class="govuk-heading govuk-heading-l">{{ 'Flag application' if form.errors else pageHeading }}</h1>
+                    <p class="govuk-body">
+                        Flag a section to a lead assessor. They will review the responses
+                        to either resolve your query, or stop the assessment.
+                    </p>
+
+                    {# Reason for Flagging #}
+                    {{ govukTextarea({
+                        'id': form.justification.id,
+                        'name': form.justification.id,
+                        'label': {
+                            'text': 'Reason for flagging',
+                            'classes': 'govuk-label govuk-label--m'
+                        },
+                        'errorMessage': {
+                            'text': form.errors.get("justification") | join("\n")
+                        } if form.errors.get("justification") else None,
+                        'rows': 8,
+                        'value': form.justification.data or ""
+                    }) }}
+
+                    {# Section(s) to Flag #}
+                    <div class="{{ 'govuk-form-group govuk-form-group--error' if form.errors.get('section') else 'govuk-form-group' }}" id="{{ form.section.id }}">
+                        {{ govukLabel({
+                            'name': form.section.id,
+                            'text': 'Section(s) to flag',
+                            'errorMessage': {
+                                'text': form.errors.get("section") | join("\n")
+                            } if form.errors.get("section") else None,
+                            'value': form.section.data or "",
+                            'classes': 'govuk-label govuk-label--m',
+                            'for': form.section.id
+                        }) }}
+                        {% if form.errors.get("section") %}
+                            <p id="section-error" name="{{ form.section.id }}" class="govuk-error-message" >
+                            <span class="govuk-visually-hidden">Error:</span> {{ form.errors.get("section")[0] }}
+                            </p>
+                        {% endif %}
+                        <div class="govuk-hint">Select all that apply</div>
+
+                        {# Get list of sub-sections from Unscored section #}
+                        {% set items = [] %}
+                        {% for section in state.sections %}
+                            {% if section.name in ['Unscored', 'Expression of interest'] %}
+                                {% for sub_section in section.sub_criterias %}
+                                    {% set checked = False %}
+                                    {% if form.section.data and (sub_section["id"] in form.section.data) %}
+                                        {% set checked = True %}
+                                    {% endif %}
+                                    {% set addItem = items.append({'value': sub_section["id"],
+                                                                    'text': sub_section["name"],
+                                                                    'checked': checked}) %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                        <!-- vvv Remove once assessment_store uses fund-store db vvv -->
+                        {% if state.fund_name == "Night Shelter Transformation Fund" %}
+                            {% for section in state.sections %}
+                                {% if section.name == 'Your organisation' %}
+                                    {% for sub_section in section.sub_criterias %}
+                                        {% set checked = False %}
+                                        {% if form.section.data and (sub_section["id"] in form.section.data) %}
+                                            {% set checked = True %}
+                                        {% endif %}
+                                        {% set addItem = items.append({'value': sub_section["id"],
+                                                                        'text': sub_section["name"],
+                                                                        'checked': checked}) %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if items %}
+                            {{ govukCheckboxes({
+                                'idPrefix': 'Unscored',
+                                'name': form.section.id,
+                                'fieldset': {
+                                    'legend': {
+                                        'html': '<h1 class="govuk-fieldset__heading">Unscored</h1>
+                                                <br>
+                                                <h1 class="govuk-fieldset__heading">Your Organisation</h1>',
+                                    'classes': 'govuk-fieldset__legend--s'
+                                    }
+                                },
+                                'attributes': {'data-qa': 'select_unscored_section_to_flag'},
+                                'items': items,
+                                'classes': 'govuk-checkboxes--small'
+                                })
+                            }}
+                            {% endif %}
+                        {% else %}
+                        <!-- ^^^ Remove once assessment_store uses fund-store db ^^^ -->
+                        {% if items %}
+                        {{ govukCheckboxes({
+                            'idPrefix': 'Unscored',
+                            'name': form.section.id,
+                            'fieldset': {
+                                'legend': {
+                                'html': '<h1 class="govuk-fieldset__heading">Unscored</h1>',
+                                'classes': 'govuk-fieldset__legend--s'
+                                }
+                            },
+                            'attributes': {'data-qa': 'select_unscored_section_to_flag'},
+                            'items': items,
+                            'classes': 'govuk-checkboxes--small'
+                            })
+                        }}
+                        {% endif %}
+                        {% endif %}
+
+                        {# Get list of sub-sections from Declaration section #}
+                        {% set items = [] %}
+                        {% for section in state.sections %}
+                            {% if section.name == 'Declarations' %}
+                                {% for sub_section in section.sub_criterias %}
+                                    {% set checked = False %}
+                                    {% if form.section.data and (sub_section["id"] in form.section.data) %}
+                                        {% set checked = True %}
+                                    {% endif %}
+                                    {% set addItem = items.append({'value': sub_section["id"],
+                                                                'text': sub_section["name"],
+                                                                'checked': checked}) %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if items %}
+                        {{ govukCheckboxes({
+                            'idPrefix': 'Declarations',
+                            'name': form.section.id,
+                            'fieldset': {
+                                'legend': {
+                                'html': '<h1 class="govuk-fieldset__heading">Declarations</h1>',
+                                'classes': 'govuk-fieldset__legend--s'
+                                }
+                            },
+                            'attributes': {'data-qa': 'select_declaration_section_to_flag'},
+                            'items': items,
+                            'classes': 'govuk-checkboxes--small'
+                            })
+                        }}
+                        {% endif %}
+
+                        <div class="govuk-form-group">
+                            {# Get list of sub-sections from Scored section #}
+                            {% if state.criterias %}
+                            {% call govukFieldset({
+                                    'legend': {
+                                        'html': "<h1 class=\"govuk-fieldset__heading\">Scored</h1>",
+                                        'classes': 'govuk-fieldset__legend--s'
+                                        }
+                                    })
+                            %}
+                            {% for section in state.criterias %}
+                                {% set items = [] %}
+                                {% for sub_section in section.sub_criterias %}
+                                    {% set checked = False %}
+                                    {% if form.section.data and (sub_section["id"] in form.section.data) %}
+                                        {% set checked = True %}
+                                    {% endif %}
+                                    {% set addItem = items.append({'value': sub_section["id"],
+                                                                'text': sub_section["name"],
+                                                                'checked': checked }) %}
+                                {% endfor %}
+                                {% if items %}
+                                {{ govukCheckboxes({
+                                    'idPrefix': section["name"],
+                                    'name': form.section.id,
+                                    'fieldset': {
+                                        'legend': {
+                                        'html': "<h1 class=\"govuk-fieldset__heading\">{}</h1>".format(section["name"]),
+                                        'classes': 'govuk-fieldset__legend--s'
+                                        }
+                                    },
+                                    'attributes': {'data-qa': 'select_scored_section_to_flag'},
+                                    'items': items,
+                                    'classes': 'govuk-checkboxes--small'
+                                    })
+                                }}
+                                {% endif %}
+                            {% endfor %}
+
+                            {# Flag Allocation #}
+                            {% if teams_available %}
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-label--m">Flag allocation</label>
+                                    {% set items = [] %}
+                                        {% for team in teams_available %}
+                                            {% set addItem = items.append({
+                                                                            "value": team["value"],
+                                                                            "text": team["value"],
+                                                                            "label": {
+                                                                            "text": "teams_available",
+                                                                            "for": form.teams_available.id
+                                                                            },
+                                                                            "checked": form.teams_available.data==team["value"]
+                                                                            }) %}
+                                        {% endfor %}
+                                    {{ govukRadios({
+                                        "id": form.teams_available.id,
+                                        "name": form.teams_available.id,
+                                        "items": items,
+                                        'attributes': {'data-qa': 'select_teams_to_flag'},
+                                        "errorMessage": {
+                                        "text": form.errors.get(form.teams_available.id) | join("\n"),
+                                        } if form.errors.get(form.teams_available.id) else None
+                                        }) }}
+
+                                </div>
+                            {% endif %}
+                            {% endcall %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <button class="govuk-button primary-button"
+                                data-module="govuk-button"
+                                data-qa="submit-flag-button">
+                            Submit
+                        </button>
+                        <a href="{{ url_for('assessment_bp.application', application_id=application_id)}}"
+                            class="govuk-button secondary-button">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends "assess/base.html" %}
+{%- from "govuk_frontend_jinja/components/table/macro.html" import govukTable -%}
+{%- from 'govuk_frontend_jinja/components/textarea/macro.html' import govukTextarea -%}
+{% from "assess/macros/banner_summary.html" import banner_summary %}
+{% from "assess/macros/migration_banner.html" import migration_banner %}
+{% set pageHeading = "Mark QA as complete" %}
+
+{% block header %}
+{% include "assess/components/header.html" %}
+{% endblock header %}
+
+{% block content %}
+<div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {% if migration_banner_enabled %}
+                {{ migration_banner()}}
+            {% endif %}
+            <form method="post">
+                {{ form.csrf_token }}
+                <h1 class="govuk-heading govuk-heading-l">{{ pageHeading }}</h1>
+
+                <p class="govuk-body">This will confirm you've completed quality assurance (QA) on this application.</p>
+                <p class="govuk-body">It may be selected for moderation after you've done this.</p>
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button primary-button" data-module="govuk-button">
+                        Submit
+                    </button>
+                    <a href="{{ url_for('assessment_bp.application', application_id=application_id) }}"
+                        class="govuk-button secondary-button govuk-link--no-visited-state">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+</div>
+
+{% endblock content %}

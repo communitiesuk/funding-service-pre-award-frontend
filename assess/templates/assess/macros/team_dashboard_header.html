@@ -1,0 +1,60 @@
+{%- from 'govuk_frontend_jinja/components/back-link/macro.html' import govukBackLink -%}
+{% from "assess/macros/logout_partial.html" import logout_partial %}
+
+{% macro render(round_details, stats, team_flag_stats, is_active_status, sso_logout_url) %}
+
+<header role="banner" data-module="govuk-header">
+    <nav class="govuk-width-container govuk-header__navigation">
+        <div class="govuk-phase-banner flex-parent-element">
+            <p class="govuk-!-text-align-left govuk-!-margin-left-3 flex-parent-element flexed-element-margins-collapse">
+                {{ govukBackLink({'href': url_for("assessment_bp.landing"), 'html': 'Back to <b>assessment landing</b>',
+                'attributes': {'data-qa': 'back-to-assessment-overview-link'} }) }}
+            </p>
+            {{ logout_partial(sso_logout_url) }}
+        </div>
+    </nav>
+
+    <div class="fsd-banner-background">
+        <div class="govuk-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <div class="govuk-grid-column-two-thirds">
+                        <h1 class="govuk-heading-xl fsd-banner-content">Team dashboard</h1>
+                        {% if g.access_controller.is_lead_assessor %}
+                        <div class="govuk-body fsd-banner-content lead-dashboard-stats">
+                            {% if round_details["is_expression_of_interest"] %}
+                            <div class="lead-dashboard-stat">
+                                <p id="lead-dashboard-stat-assessments-qa-completed">{{ stats.qa_completed }}</p>
+                                <p class="lead-dashboard-stat-assessments-completed">QA complete</p>
+                            </div>
+                            {% endif %}
+                            <div class="lead-dashboard-stat">
+                                <p id="lead-dashboard-stat-assessments-total">{{ stats.total }}</p>
+                                <p>Assessments</p>
+                            </div>
+                            {% for team in team_flag_stats %}
+                            {% if team.raised > 0 and team.team_name %}
+                            <div class="lead-dashboard-stat">
+                                <p id="lead-dashboard-stat-assessments-total">{{ team.raised }}</p>
+                                <p>Total flagged for {{ team.team_name }}</p>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <h2 class="govuk-heading-l fsd-banner-content"> {% if is_active_status %}All active
+                            assessments{% else %}All closed assessments{% endif %}</h2>
+                        <p class="govuk-body-l fsd-banner-content fsd-banner-collapse-padding"><strong>Fund: </strong>{{
+                            round_details["fund_name"] }}</p>
+                        {% if not round_details["is_expression_of_interest"] %}
+                        <p class="govuk-body-l fsd-banner-content"><strong>Round: </strong>{{
+                            round_details["round_title"] }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+{% endmacro %}

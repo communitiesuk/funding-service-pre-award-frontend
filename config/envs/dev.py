@@ -12,3 +12,7 @@ from config.envs.default import DefaultConfig
 class DevConfig(DefaultConfig):
     FSD_LOGGING_LEVEL = logging.INFO
     SESSION_COOKIE_DOMAIN = getenv("SESSION_COOKIE_DOMAIN")
+
+    # assess dev config 
+    REDIS_INSTANCE_NAME = "funding-service-magic-links-dev"
+    FSD_LOG_LEVEL = "DEBUG"

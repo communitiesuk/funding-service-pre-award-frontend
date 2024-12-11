@@ -1,0 +1,95 @@
+{% extends "assess/base.html" %}
+{%- from 'govuk_frontend_jinja/components/inset-text/macro.html' import govukInsetText -%}
+{%- from "govuk_frontend_jinja/components/button/macro.html" import govukButton -%}
+{%- from 'govuk_frontend_jinja/components/back-link/macro.html' import govukBackLink -%}
+{%- from 'govuk_frontend_jinja/components/tabs/macro.html' import govukTabs -%}
+{% import "assess/macros/application_overviews_table_all.html" as application_overviews_table -%}
+{% import "assess/macros/team_dashboard_header.html" as team_dashboard_header -%}
+{% from "assess/macros/banner_summary.html" import banner_summary %}
+{% from "assess/macros/logout_partial.html" import logout_partial %}
+{% from "assess/macros/migration_banner.html" import migration_banner %}
+
+{% set pageHeading %}Team dashboard{% endset %}
+
+{% block header %}
+    {{ team_dashboard_header.render(round_details, stats, team_flag_stats, is_active_status) }}
+{% endblock header %}
+
+{% block content %}
+{# CLOSE THE GOVUK-WIDTH-CONTAINER AND OPEN A WIDER CONTAINER FOR THE TABLE VIEW #}
+
+
+<div class="govuk-grid-row">
+    {% if migration_banner_enabled %}
+    {{ migration_banner() }}
+    {% endif %}
+    <section id="select-assessors" class="govuk-width-container govuk-grid-column-full">
+        <header class="govuk-body">
+            <h1 class="govuk-heading-l">Assign assessment to {{ "lead" if assessor_role == "lead_assessor" else "general" }} assessor</h1>
+        </header>
+        {% if form.form_errors %}
+        <div class="govuk-error-summary" data-module="govuk-error-summary">
+        <div role="alert">
+            <h2 class="govuk-error-summary__title">
+            There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                {% for error in form.form_errors %}
+                <li><a href="#assessor-selection">{{ error }}</a></li>
+                {% endfor %}
+            </ul>
+            </div>
+        </div>
+        </div>
+        {% endif %}
+        <div class="govuk-form-group">
+        <p class="govuk-body">Select the user/s you would like to assign this assessment to</p>
+
+            <form method="post" action="{{ url_for('assessment_bp.assessor_type_list',
+                        fund_short_name=round_details.fund_short_name,
+                        round_short_name=round_details.round_short_name) }}">
+                {{ form.csrf_token }}
+                <p class="govuk-body">Showing {{ users|length }} user{{ "s" if users|length > 2 else "" }}</p>
+                {% for assessment in selected_assessments %}
+                    <input type="hidden" name="selected_assessments" value="{{ assessment }}">
+                {% endfor %}
+                {% for user_id in assigned_users %}
+                    <input type="hidden" name="assigned_users" value="{{ user_id }}">
+                {% endfor %}
+                <input type="hidden" name="assessor_role" value="{{ assessor_role }}">
+                {% if form.form_errors %}
+                <p class="govuk-error-message">
+                {% for error in form.form_errors %}
+                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                {% endfor %}
+                </p>
+                {% endif %}
+                <input id="select_all_users" type="checkbox">
+                <label class="govuk-label govuk-checkboxes__label" for="select_all_users">Select all</label>
+                <table class="govuk-table {% if form.form_errors %} govuk-form-group--error {% endif %}" id="assessor-selection">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Select</th>
+                            <th scope="col" class="govuk-table__header">Name</th>
+                            <th scope="col" class="govuk-table__header">Email</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for user in users %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <input type="checkbox" name="selected_users" aria-labelledby="user-{{ loop.index }}" value="{{ user["account_id"] }}" {% if user["account_id"] in selected_users %}checked{% endif %}>
+                            </td>
+                            <td id="user-{{ loop.index }}" class="govuk-table__cell">{{ user["full_name"] }}</td>
+                            <td class="govuk-table__cell">{{ user["email_address"] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        </div>
+            <button class="govuk-button" type="submit">Continue</button>
+        </form>
+    </section>
+</div>
+{% endblock content %}

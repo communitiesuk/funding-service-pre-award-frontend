@@ -7,14 +7,12 @@ from apply.default.application_routes import application_bp
 from apply.default.content_routes import content_bp
 from apply.default.routes import default_bp
 
-
 @application_bp.errorhandler(404)
 @content_bp.errorhandler(404)
 @default_bp.errorhandler(404)
 @account_bp.errorhandler(404)
 def not_found(error):
     return render_template("apply/404.html", is_error=True), 404
-
 
 @application_bp.errorhandler(500)
 @content_bp.errorhandler(500)
@@ -27,7 +25,6 @@ def not_found(error):
 def internal_server_error(error):
     current_app.logger.exception("Encountered 500: {error}", extra=dict(error=str(error)))
     return render_template("apply/500.html", is_error=True), 500
-
 
 @default_bp.errorhandler(401)
 @application_bp.errorhandler(401)

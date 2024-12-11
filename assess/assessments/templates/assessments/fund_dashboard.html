@@ -1,0 +1,136 @@
+{% extends "assess/base.html" %}
+{%- from 'govuk_frontend_jinja/components/inset-text/macro.html' import govukInsetText -%}
+{%- from "govuk_frontend_jinja/components/button/macro.html" import govukButton -%}
+{%- from 'govuk_frontend_jinja/components/tabs/macro.html' import govukTabs -%}
+{% import "assess/macros/application_overviews_table_all.html" as application_overviews_table -%}
+{% import "assess/macros/team_dashboard_header.html" as team_dashboard_header -%}
+{% from "assess/macros/banner_summary.html" import banner_summary %}
+{% from "assess/macros/migration_banner.html" import migration_banner %}
+
+{% set pageHeading %}Team dashboard{% endset %}
+
+{% block header %}
+    {{ team_dashboard_header.render(round_details, stats, team_flag_stats, is_active_status, sso_logout_url) }}
+{% endblock header %}
+
+{% block content %}
+{# CLOSE THE GOVUK-WIDTH-CONTAINER AND OPEN A WIDER CONTAINER FOR THE TABLE VIEW #}
+
+
+<div class="govuk-grid-row">
+    {% if migration_banner_enabled %}
+    {{ migration_banner() }}
+    {% endif %}
+    {% macro ApplicationsOverviewHtmlBase(heading_text) %}
+    <header class="govuk-body ">
+            {% if user.highest_role_map[round_details.fund_short_name] == 'LEAD_ASSESSOR' and toggle_dict.get("ASSESSMENT_ASSIGNMENT") %}
+            <section class="govuk-phase-banner govuk-grid-row">
+                <span id="empty-positioning-child" class="govuk-grid-column-two-thirds empty-positioning-child">&nbsp;</span>
+                <span class="govuk-grid-column-one-third">
+                    <a href="{{ url_for('assessment_bp.assign_assessments',
+                      fund_short_name=round_details.fund_short_name,
+                      round_short_name=round_details.round_short_name)}}" class="govuk-link">
+                        Assign assessments
+                    </a>
+                </span>
+            </section>
+            {% endif %}
+        <h1 class="govuk-heading-l">{{ heading_text }}</h1>
+    </header>
+    {% endmacro -%}
+    <section id="application-overview" class="govuk-width-container govuk-grid-column-full">
+        {% set allApplicationsOverviewHtml %}
+        {% set all_apps_display_config = display_config | add_to_dict({'tab_id': 'all-applications'}) %}
+        {{ ApplicationsOverviewHtmlBase("All applications") }}
+        {{ application_overviews_table.render(
+        application_overviews,
+        round_details,
+        query_params,
+        asset_types,
+        assessment_statuses,
+        all_apps_display_config,
+        sort_column,
+        sort_order,
+        tag_option_groups,
+        tags,
+        tagging_purpose_config,
+        users
+        ) }}
+        {% endset -%}
+
+        {% set assignedApplicationsHtml %}
+        {% set assigned_display_config = display_config | add_to_dict({'tab_id': 'assigned-to-you'}) %}
+        {{ ApplicationsOverviewHtmlBase("Assigned to you") }}
+        {{ application_overviews_table.render(
+        assigned_applications,
+        round_details,
+        query_params,
+        asset_types,
+        assessment_statuses,
+        assigned_display_config,
+        sort_column,
+        sort_order,
+        tag_option_groups,
+        tags,
+        tagging_purpose_config,
+        []
+        ) }}
+        {% endset -%}
+
+        {% set reportingToYouApplicationsOverviewHtml %}
+        {% set reporting_display_config = display_config | add_to_dict({'tab_id': 'reporting-to-you'}) %}
+        {{ ApplicationsOverviewHtmlBase("Reporting to you") }}
+        {{ application_overviews_table.render(
+        reporting_to_user_applications,
+        round_details,
+        query_params,
+        asset_types,
+        assessment_statuses,
+        reporting_display_config,
+        sort_column,
+        sort_order,
+        tag_option_groups,
+        tags,
+        tagging_purpose_config,
+        users
+        ) }}
+        {% endset -%}
+
+        {{ govukTabs({
+        "items": [
+            {
+            "label": "All applications",
+            "id": "all-applications",
+            "panel": {
+            "html": allApplicationsOverviewHtml
+            }
+        },
+        {
+            "label": "Assigned to you (" ~ assigned_applications | length ~ ")",
+            "id": "assigned-to-you",
+            "panel": {
+            "html": assignedApplicationsHtml
+            }
+        },
+        {
+            "label": "Reporting to you (" ~ reporting_to_user_applications | length ~ ")",
+            "id": "reporting-to-you",
+            "panel": {
+            "html": reportingToYouApplicationsOverviewHtml
+            }
+        },
+        ]
+        }) }}
+        <!--
+        TODO: Add to tabs later
+        [
+            {
+            "label": "Scoring",
+            "id": "scoring",
+            "panel": {
+            "html": "TBC"
+            }
+        }] -->
+    </section>
+</div>
+{% endblock content %}

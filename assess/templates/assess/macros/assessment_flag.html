@@ -1,0 +1,137 @@
+{% from "assess/macros/flag_history.html" import display_flagged_sections %}
+
+{% macro assessment_flagged(state, flag, user_info, application_id) %}
+    <div class="assessment-alert assessment-alert--flagged" role="alert">
+        <h1 class="assessment-alert__heading govuk-heading-l">
+            {{ ("Flagged for "+ flag.latest_allocation if flag.latest_allocation else "Flagged") }}
+        </h1>
+        <h2>Reason</h2>
+        {% for update in flag.updates %}
+            {% if update["status"].name == "RAISED" %}
+                <p>{{ update["justification"] }}</p>
+            {% endif %}
+        {% endfor %}
+        <h2>Section(s) flagged</h2>
+        {{ display_flagged_sections(state, application_id, flag.sections_to_flag) }}
+        {# TODO: Notification is hardcoded. Change it once notification is implemented #}
+        <h2>Notification sent</h2>
+        <p>No</p><br>
+        <p class="govuk-body-s">{{ user_info["full_name"] or "N/A" }} ({{ user_info["highest_role"] | all_caps_to_human }}) {{ user_info["email_address"] }}</p>
+        <p class="govuk-body-s">{{ flag.date_created | utc_to_bst }}</p>
+        {% if g.access_controller.is_lead_assessor %}
+            <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{ url_for('flagging_bp.resolve_flag',application_id=application_id)}}?flag_id={{ flag.id }}" data-qa="resolve-flag-link">Resolve flag</a></p>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro assessment_resolved(flag, user_info, application_id) %}
+    <div class="assessment-complete  govuk-margin-bottom-8" role="alert">
+        {% if flag.updates[-1]["status"].name == "RESOLVED" %}
+            {% if flag.updates[-2]["status"].name == "STOPPED" %}
+                <h1 class="assessment-alert__heading govuk-heading-l">
+                    {{ ("Flagged for "+ flag.latest_allocation if flag.latest_allocation else "Flagged") + " - Continue assessment" }}
+                </h1>
+                <h2>Reason for continuing assessment</h2>
+                <p>{{ flag.updates[-1]["justification"] }}</p>
+            {% else %}
+                <h1 class="assessment-alert__heading govuk-heading-l">
+                    {{ ("Flagged for "+ flag.latest_allocation if flag.latest_allocation else "Flagged") + " resolved" }}
+                </h1>
+                <h2>Resolve flag action</h2>
+                <p>Query resolved</p>
+                <h2>Reason</h2>
+                <p>{{ flag.updates[-1]["justification"] }}</p>
+            {% endif %}
+        {% endif %}
+        <br>
+        <p class="govuk-body-s">{{ user_info["full_name"] or "N/A" }} ({{ user_info["highest_role"] | all_caps_to_human }}) {{ user_info["email_address"] }}</p>
+        <p class="govuk-body-s">{{ flag.updates[-1]["date_created"] | utc_to_bst }}</p>
+    </div>
+{% endmacro %}
+
+{% macro assessment_stopped(flag, user_info, application_id) %}
+    <div class="assessment-alert assessment-alert--stopped" role="alert">
+        <h1 class="assessment-alert__heading govuk-heading-l">
+            {{ ("Flagged for "+ flag.latest_allocation if flag.latest_allocation else "Flagged") +  " - Assessment stopped" }}
+        </h1>
+        <h2 class="govuk-heading-m">Reason</h2>
+        {% for update in flag.updates %}
+            {% if update["status"].name == "STOPPED" %}
+                <p class="govuk-body">{{ update["justification"] }}</p>
+            {% endif %}
+        {% endfor %}
+        <br>
+        <p class="govuk-body-s">{{ user_info["full_name"] or "N/A" }} ({{ user_info["highest_role"] | all_caps_to_human }}) {{ user_info["email_address"] }}</p>
+        <p class="govuk-body-s">{{ flag.date_created | utc_to_bst }}</p>
+        {% if g.access_controller.is_lead_assessor %}
+            <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{ url_for('flagging_bp.continue_assessment',application_id=application_id)}}?flag_id={{ flag.id }}">Remove flag and continue assessment</a></p>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+ {# NOTE: Below macro is only being used activity_trail #}
+{% macro assessment_flag(state, flag, application_id) %}
+<p class="govuk-body govuk-!-padding-top-5"> <span
+    class="govuk-body govuk-!-font-weight-bold">Flag</span> added to assessment</p>
+    <div class="assessment-alert assessment-alert--flagged" role="alert">
+        <h1 class="assessment-alert__heading govuk-heading-l">
+            {{ ("Flagged for "+ flag.allocation if flag.allocation else "Flagged") }}
+        </h1>
+        <h2>Reason</h2>
+        <p>{{ flag.justification }}</p>
+
+        <h2>Section(s) flagged</h2>
+        {{ display_flagged_sections(state, application_id, flag.sections_to_flag) }}
+        {# TODO: Notification is hardcoded. Change it once notification is implemented #}
+        <h2>Notification sent</h2>
+        <p>No</p><br>
+        <p class="govuk-body-s">{{ flag.full_name or "N/A" }} ({{ flag.highest_role | all_caps_to_human }}) {{ flag.email_address }}</p>
+        <p class="govuk-body-s">{{ flag.date_created|utc_to_bst }}</p>
+
+    </div>
+{% endmacro %}
+
+ {# NOTE: Below macro is only being used activity_trail #}
+{% macro assessment_resolve(flag,  application_id) %}
+<p class="govuk-body govuk-!-padding-top-5"> <span
+    class="govuk-body govuk-!-font-weight-bold">Flag</span> resolved on assessment</p>
+    <div class="assessment-complete  govuk-margin-bottom-8" role="alert">
+        {% if flag.status.name == "RESOLVED" %}
+            {% if flag.status.name == "STOPPED" %}
+                <h1 class="assessment-alert__heading govuk-heading-l">
+                    {{ ("Flagged for "+ flag.allocation if flag.allocation else "Flagged") + " - Continue assessment" }}
+                </h1>
+                <h2>Reason for continuing assessment</h2>
+                <p>{{ flag.justification }}</p>
+            {% else %}
+                <h1 class="assessment-alert__heading govuk-heading-l">
+                    {{ ("Flagged for "+ flag.allocation if flag.allocation else "Flagged") + " resolved" }}
+                </h1>
+                <h2>Resolve flag action</h2>
+                <p>Query resolved</p>
+                <h2>Reason</h2>
+                <p>{{ flag.justification }}</p>
+            {% endif %}
+        {% endif %}
+        <br>
+        <p class="govuk-body-s">{{ flag.full_name or "N/A" }} ({{ flag.highest_role | all_caps_to_human }}) {{ flag.email_address }}</p>
+        <p class="govuk-body-s">{{ flag.date_created|utc_to_bst }}</p>
+    </div>
+{% endmacro %}
+
+ {# NOTE: Below macro is only being used activity_trail #}
+{% macro assessment_stop(flag, user_info, application_id) %}
+<p class="govuk-body govuk-!-padding-top-5"> <span
+    class="govuk-body govuk-!-font-weight-bold">Flag</span> stopped on assessment</p>
+    <div class="assessment-alert assessment-alert--stopped" role="alert">
+        <h1 class="assessment-alert__heading govuk-heading-l">
+            {{ ("Flagged for "+ flag.allocation if flag.allocation else "Flagged") +  " - Assessment stopped" }}
+        </h1>
+        <h2 class="govuk-heading-m">Reason</h2>
+            <p class="govuk-body">{{ flag.justification }}</p>
+        <br>
+        <p class="govuk-body-s">{{ flag.full_name or "N/A" }} ({{ flag.highest_role | all_caps_to_human }}) {{ flag.email_address }}</p>
+        <p class="govuk-body-s">{{ flag.date_created|utc_to_bst }}</p>
+
+    </div>
+{% endmacro %}

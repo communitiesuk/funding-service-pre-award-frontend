@@ -1,0 +1,25 @@
+{%- from 'govuk_frontend_jinja/components/back-link/macro.html' import govukBackLink -%}
+{% from "assess/macros/logout_partial.html" import logout_partial %}
+{% from "assess/macros/banner_summary.html" import banner_summary %}
+
+<header role="banner" data-module="govuk-header">
+    <nav class="govuk-width-container govuk-header__navigation">
+        <div class="govuk-phase-banner flex-parent-element">
+            <p class="govuk-!-text-align-left flex-parent-element flexed-element-margins-collapse">
+                {{ govukBackLink({'href': url_for("assessment_bp.application", application_id=application_id), 'html': 'Back to <b>assessment tasklist</b>', 'attributes': {'data-qa': 'back-to-assessment-tasklist'} }) }}
+            </p>
+            {{ logout_partial(sso_logout_url) }}
+        </div>
+    </nav>
+
+    {{ banner_summary(
+        (state.fund_name if state else fund.name),
+        state.fund_short_name,
+        sub_criteria.short_id if sub_criteria else state.short_id,
+        sub_criteria.project_name if sub_criteria else state.project_name,
+        sub_criteria.funding_amount_requested if sub_criteria else state.funding_amount_requested,
+        assessment_status,
+        flag_status,
+        is_eoi_round=state.is_eoi_round
+    ) }}
+</header>

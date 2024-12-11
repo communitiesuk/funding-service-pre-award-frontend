@@ -20,7 +20,7 @@ on:
         description: Run performance tests
       run_e2e_tests_assessment:
         required: false
-        default: false
+        default: true
         type: boolean
         description: Run e2e tests (assessment)
       run_e2e_tests_application:
@@ -40,6 +40,7 @@ jobs:
     uses: communitiesuk/funding-service-design-workflows/.github/workflows/pre-deploy.yml@main
     with:
       postgres_unit_testing: false
+      assets_required: true
 
   paketo_build:
     needs: [ setup ]
@@ -77,8 +78,8 @@ jobs:
     uses: communitiesuk/funding-service-design-workflows/.github/workflows/post-deploy.yml@main
     with:
       run_performance_tests: ${{ inputs.run_performance_tests || true }}
-      run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || false }}
-      run_e2e_tests_application: ${{ inputs.run_e2e_tests_application || false }}
+      run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || true }}
+      run_e2e_tests_application: ${{ inputs.run_e2e_tests_application || true }}
       app_name: pre-award-frontend
       environment: dev
 
@@ -108,7 +109,7 @@ jobs:
     uses: communitiesuk/funding-service-design-workflows/.github/workflows/post-deploy.yml@main
     with:
       run_performance_tests: ${{ inputs.run_performance_tests || false }}
-      run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || false }}
+      run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || true }}
       run_e2e_tests_application: ${{ inputs.run_e2e_tests_application || true }}
       app_name: pre-award-frontend
       environment: test
@@ -139,7 +140,7 @@ jobs:
     uses: communitiesuk/funding-service-design-workflows/.github/workflows/post-deploy.yml@main
     with:
       run_performance_tests: ${{ inputs.run_performance_tests || false }}
-      run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || false }}
+      run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || true }}
       run_e2e_tests_application: ${{ inputs.run_e2e_tests_application || true }}
       app_name: pre-award-frontend
       environment: uat

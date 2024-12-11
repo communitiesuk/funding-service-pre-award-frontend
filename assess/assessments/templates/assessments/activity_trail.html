@@ -1,0 +1,210 @@
+{% extends "assess/base.html" %}
+{% from "assess/macros/theme.html" import theme %}
+{% from "govuk_frontend_jinja/components/label/macro.html" import govukLabel %}
+{%- from "govuk_frontend_jinja/components/table/macro.html" import govukTable -%}
+{%- from "govuk_frontend_jinja/components/fieldset/macro.html" import govukFieldset -%}
+{%- from "govuk_frontend_jinja/components/textarea/macro.html" import govukTextarea -%}
+{%- from "govuk_frontend_jinja/components/checkboxes/macro.html" import govukCheckboxes -%}
+{%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios %}
+{%- from 'govuk_frontend_jinja/components/back-link/macro.html' import govukBackLink -%}
+{% from "assess/macros/logout_partial.html" import logout_partial %}
+{% from "assess/macros/banner_summary.html" import banner_summary %}
+{% from "assess/macros/assessment_flag.html" import assessment_flag as assessment_flagged %}
+{% from "assess/macros/assessment_flag.html" import assessment_resolve as assessment_resolved %}
+{% from "assess/macros/assessment_flag.html" import assessment_stop as assessment_stopped %}
+{% from "assess/macros/comments.html" import comments %}
+{% from "assess/macros/scores_justification.html" import score as scores %}
+{% from "assess/macros/tags_table.html" import tags %}
+{% from "assess/macros/migration_banner.html" import migration_banner %}
+
+{% set pageHeading = "Activity trail" %}
+
+{% set assessment_status = assessment_status if assessment_status is defined else None %}
+{% set fund_shortname = fund_shortname if fund_shortname is defined else None %}
+{% set funding_amount = sub_criteria.funding_amount_requested if sub_criteria else state.funding_amount_requested %}
+
+{% block header %}
+<header role="banner" data-module="govuk-header">
+    <nav class="govuk-width-container govuk-header__navigation">
+        <div class="govuk-phase-banner flex-parent-element">
+            <p class="govuk-!-text-align-left flex-parent-element flexed-element-margins-collapse">
+                {{ govukBackLink({'href': url_for("assessment_bp.application", application_id=application_id), 'html':
+                'Back to <b>assessment tasklist</b>', 'attributes': {'data-qa': 'back-to-assessment-tasklist'} }) }}
+            </p>
+            {{ logout_partial(sso_logout_url) }}
+        </div>
+    </nav>
+
+    {{ banner_summary(
+    (state.fund_name if state else fund.name),
+    state.fund_short_name,
+    sub_criteria.short_id if sub_criteria else state.short_id,
+    sub_criteria.project_name if sub_criteria else state.project_name,
+    funding_amount,
+    assessment_status,
+    flag_status,
+    display_status=False,
+    is_eoi_round=state.is_eoi_round
+    ) }}
+</header>
+{% endblock header %}
+
+{% block content %}
+
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    {% if migration_banner_enabled %}
+    {{ migration_banner() }}
+    {% endif %}
+    <div class="govuk-grid-row">
+        <div>
+            <div class="govuk-!-padding-left-3">
+                <h1 class="govuk-heading-l">Activity trail</h1>
+                {% if not is_expression_of_interest %}
+                <p class="govuk-body">Current assessment status:
+                {% if display_status == "Stopped" %}
+                    <span class="stopped-tag">
+                        {{ display_status }}
+                    </span>
+                {% elif ("Flagged" in display_status) or (display_status in ("Flagged", "Multiple flags to resolve")) %}
+                    <span class="flagged-tag">
+                        {{ display_status }}
+                    </span>
+                {% elif display_status == "Not started" %}
+                    <span class="not-started-tag">
+                        {{ display_status }}
+                    </span>
+                {% else %}
+                    <span>
+                        {{ display_status }}
+                    </span>
+                {% endif %}
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="govuk-grid-column-one-third">
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">
+                                Filters
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <form method="get"
+                    action="{{ url_for('assessment_bp.activity_trail', application_id=application_id) }}">
+                    {# Search input #}
+                    <div class="govuk-form-group govuk-body">
+                        <label class="govuk-label">Search keywords or users</label>
+                        <input class="search-input govuk-input govuk-!-width-full" aria-label="Search keywords or users"
+                            id="search" name="search" type="text"
+                            value="{%- if search_keyword -%}{{ search_keyword }}{%- endif -%}">
+                    </div>
+
+                    {# Checkbox filters #}
+                    <div class="govuk-form-group">
+                        {% for filter_option in available_filters %}
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="{{ filter_option|lower }}Checkbox"
+                                type="checkbox" name="filter" value="{{ filter_option }}" {% if
+                                (filter_option=="All activity" and not checkbox_filters) or filter_option in
+                                checkbox_filters %}checked{% endif %}>
+                            <label class="govuk-label govuk-checkboxes__label" for="{{ filter_option|lower }}Checkbox">
+                                {{ filter_option }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    {# Apply filters button #}
+                    <div class="govuk-button-group">
+                        <button class="govuk-button primary-button" type="submit">
+                            Apply Filters
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="govuk-grid-column-two-thirds">
+                <div>
+
+                    <table class="govuk-table" role="table">
+
+                        {% if not activities %}
+                        <div role="status" aria-live="assertive" class="govuk-!-margin-top-4">
+                            <p class="govuk-body" autofocus>
+                                <strong>No matching results.</strong>
+                            </p>
+                            <p class="govuk-body">Improve your results by:</p>
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>removing filters</li>
+                                <li>double-checking your spelling</li>
+                            </ul>
+                        </div>
+
+                        {% elif activities %}
+                        <thead class="govuk-table__head" role="rowgroup">
+                            <tr class="govuk-table__row" role="row">
+                                <th role="columnheader" scope="col" class="govuk-!-width-one-third govuk-table__header">
+                                    Actions ({{ activities|length }}) </th>
+                            </tr>
+                        </thead>
+                        {% for activity in activities %}
+
+                        <tbody class="govuk-table__body">
+                            <tr class="govuk-table__row" id="commentItem1">
+                                <td scope="row" class="govuk-table__cell govuk-!-width-one-third">
+                                    <div>
+                                        {% if activity.__class__.__name__ == 'Flags' %}
+                                        {% if activity.status.name == "RAISED" %}
+                                        {{ assessment_flagged(state, activity, application_id)}}
+                                        {% elif activity.status.name == "RESOLVED" %}
+                                        {{ assessment_resolved(activity, application_id)}}
+                                        {% elif activity.status.name == "STOPPED" %}
+                                        {{ assessment_stopped(activity, application_id)}}
+                                        {% endif %}
+
+                                        {% elif activity.__class__.__name__ == 'Comments' %}
+                                        {{ comments(activity, application_id)}}
+
+                                        {% elif activity.__class__.__name__ == 'Scores' %}
+                                        {{ scores(activity, application_id)}}
+
+                                        {% elif activity.__class__.__name__ == 'AssociatedTags' %}
+                                        {% if activity.purpose =="NEGATIVE" %}
+                                        {{ tags(activity, "red")}}
+                                        {% elif activity.purpose =="POSITIVE" %}
+                                        {{ tags(activity, "green")}}
+                                        {% elif activity.purpose =="GENERAL" %}
+                                        {{ tags(activity, "blue")}}
+                                        {% elif activity.purpose =="ACTION" %}
+                                        {{ tags(activity, "yellow")}}
+                                        {% elif activity.purpose =="PEOPLE" %}
+                                        {{ tags(activity, "grey")}}
+                                        {% endif %}
+
+                                        {% else %}
+                                        {{ activity }}
+
+                                        {% endif %}
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+
+                        {% endif %}
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock content %}

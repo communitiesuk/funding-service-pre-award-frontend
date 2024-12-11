@@ -1,0 +1,26 @@
+{%- from 'govuk_frontend_jinja/components/back-link/macro.html' import govukBackLink -%}
+{% from "assess/macros/logout_partial.html" import logout_partial %}
+{% macro tag_header(backLinkTitle, backLinkHref, fund_round, sso_logout_url) %}
+    <header role="banner" data-module="govuk-header">
+        <nav class="govuk-width-container govuk-header__navigation">
+            <div class="govuk-phase-banner flex-parent-element">
+                <p class="govuk-!-text-align-left govuk-!-margin-left-3 flex-parent-element flexed-element-margins-collapse">
+                    {{ govukBackLink({'href': backLinkHref, 'html': 'Back to <b>'+backLinkTitle+'</b>', 'attributes': {'data-qa': 'back-to-assessment-dashboard'} }) }}
+                </p>
+                {{ logout_partial(sso_logout_url) }}
+            </div>
+        </nav>
+        <div class="fsd-banner-background">
+        <div class="govuk-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <div class="govuk-grid-column-two-thirds">
+                        <p class="govuk-heading-xl fsd-banner-content">Fund: <span class="govuk-!-font-weight-regular">{{ fund_round["fund_name"] }}</span></p>
+                        <p class="govuk-heading-xl fsd-banner-content">Round: <span class="govuk-!-font-weight-regular">{{ fund_round["round_name"] }}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </header>
+{% endmacro %}

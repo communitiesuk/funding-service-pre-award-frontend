@@ -1,0 +1,78 @@
+{% extends "assess/base.html" %}
+{% from "assess/macros/tag_header.html" import tag_header %}
+{% from "assess/macros/migration_banner.html" import migration_banner %}
+
+{% set pageHeading -%}
+{{ "Error: " if form.errors }}Edit {{ tag.value }} tag
+{% endset %}
+
+{% block header %}
+{{ tag_header("manage tags", url_for("tagging_bp.load_fund_round_tags", fund_id=fund_round["fund_id"], round_id=fund_round["round_id"]), fund_round, sso_logout_url) }}
+{% endblock header %}
+
+{% block content %}
+{% if migration_banner_enabled %}
+  {{ migration_banner()}}
+{% endif %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds content-container">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">Edit tag "{{ tag.value }}"
+        </h1>
+        <div id="contact-hint" class="govuk-hint govuk-!-margin-bottom-6">
+            Tags will be available to use across all applications for {{ fund_round["fund_name"] }} {{ fund_round["round_name"] }}.
+        </div>
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+              <span class="govuk-warning-text__assistive">Warning</span>
+              Editing or deactivating this tag will change it on
+              {% if tag.tag_association_count != 1 %}
+                {{ tag.tag_association_count }} tagged assessments.
+              {% else %}
+                {{ tag.tag_association_count }} tagged assessment.
+              {% endif %}
+            </strong>
+          </div>
+
+          <form method="post">
+            {{ form.csrf_token }}
+
+            <div class="govuk-form-group">
+
+                {% for message in get_flashed_messages() %}
+                    <div class="govuk-grid-row govuk-error-summary" data-module="govuk-error-summary" role="alert">
+                        <h2 class="govuk-error-summary__title" autofocus>
+                            {{ message }}
+                        </h2>
+                    </div>
+                {% endfor %}
+
+                <h1 class="govuk-label-wrapper">
+                  <label class="govuk-label govuk-label--s" for="{{ form.value.id }}">
+                    Tag name
+                  </label>
+                </h1>
+                <input class="govuk-input govuk-!-width-two-thirds" id="{{ form.value.id }}" name="{{ form.value.id }}" type="text" value="{{ tag.value }}">
+              </div>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button primary-button" data-module="govuk-button">
+                    Save and continue
+                </button>
+                <a class="govuk-link" href="{{ url_for("tagging_bp.load_fund_round_tags", fund_id=fund_round['fund_id'], round_id=fund_round['round_id']) }}">
+                    Cancel
+                </a>
+            </div>
+        </form>
+
+        <p class="govuk-body">
+          <a class="govuk-link deactivate" data-qa="deactivate-tag" href="{{ url_for('tagging_bp.deactivate_tag',
+          fund_id=fund_round['fund_id'],
+          round_id=fund_round['round_id'],
+          tag_id=tag.id)}}">Deactivate tag</a>
+        </p>
+
+    </div>
+</div>
+
+{% endblock content %}

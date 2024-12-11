@@ -12,9 +12,6 @@ from apply.models.fund import Fund
 from config.envs.unit_test import UnitTestConfig
 from tests.apply_tests.api_data.test_data import TEST_FUNDS_DATA, TEST_ROUNDS_DATA
 
-if platform.system() == "Darwin":
-    multiprocessing.set_start_method("fork")  # Required on macOSX
-
 
 @pytest.fixture
 def mock_login(monkeypatch):
@@ -27,47 +24,6 @@ def mock_login(monkeypatch):
             "roles": [],
         },
     )
-
-
-def post_driver(driver, path, params):
-    driver.execute_script(
-        """
-    function post(path, params, method='post') {
-        const form = document.createElement('form');
-        form.method = method;
-        form.action = path;
-
-        for (const key in params) {
-            if (params.hasOwnProperty(key)) {
-            const hiddenField = document.createElement('input');
-            hiddenField.type = 'hidden';
-            hiddenField.name = key;
-            hiddenField.value = params[key];
-
-            form.appendChild(hiddenField);
-        }
-      }
-
-      document.body.appendChild(form);
-      form.submit();
-    }
-
-    post(arguments[0], arguments[1]);
-    """,
-        path,
-        params,
-    )
-
-
-@pytest.fixture(scope="session")
-def app():
-    """
-    Returns an instance of the Flask app as a fixture for testing,
-    which is available for the testing session and accessed with the
-    @pytest.mark.uses_fixture('live_server')
-    :return: An instance of the Flask app.
-    """
-    yield create_app()
 
 
 class _ApplyFlaskClient(FlaskClient):

@@ -1,0 +1,42 @@
+{% extends "assess/base.html" %}
+{% from "assess/macros/theme.html" import theme %}
+{% from "assess/macros/sub_criteria_navbar.html" import navbar %}
+{% from "assess/macros/banner_summary.html" import banner_summary %}
+{% from "assess/macros/flag_application_button.html" import flag_application_button %}
+{% from "assess/macros/migration_banner.html" import migration_banner %}
+{% set pageHeading -%}
+All uploaded documents
+{% endset %}
+
+{% block header %}
+{% include "assess/components/header.html" %}
+{% endblock header %}
+
+{% block content %}
+{% if migration_banner_enabled %}
+    {{ migration_banner()}}
+{% endif %}
+{% if is_flaggable and g.access_controller.has_any_assessor_role %}
+    {{ flag_application_button(application_id) }}
+{% endif %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third content-container">
+        <h2 class="govuk-heading-l scoring-heading">All uploaded documents</h2>
+    </div>
+</div>
+
+<div class="govuk-grid-row govuk-!-margin-bottom-6">
+    <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-one-third">
+            {{ navbar(
+                application_id,
+                {'themes': [{'id': 'all_uploaded_documents', 'name': 'All uploaded documents'}]},
+                "all_uploaded_documents"
+            ) }}
+        </div>
+        <div class="theme govuk-grid-column-two-thirds">
+            {{ theme(answers_meta)}}
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,41 @@
+{% from "assess/macros/link_to_download_contract_docs.html" import link_to_download_contract_docs %}
+
+{% macro assessment_complete(state, csrf_token, application_id) %}
+
+{% if state.workflow_status=="IN_PROGRESS" %}
+
+<form method="post" action="{{ url_for('assessment_bp.application', application_id=application_id) }}">
+    {{ csrf_token }}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div class="assessment-alert  govuk-margin-bottom-8" role="alert">
+                <h2 class="assessment-alert__heading govuk-heading-l">All sections assessed</h2>
+                <p class="govuk-body">You can now mark the assessment as complete when you're ready.</p>
+                <p class="govuk-body">It may be selected for quality assurance (QA) once you've done this.</p>
+                <button class="govuk-button primary-button" data-module="govuk-button" type="submit">Mark as
+                    complete</button>
+            </div>
+        </div>
+    </div>
+    </form>
+
+{% elif state and state.workflow_status=="COMPLETED" %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="assessment-complete govuk-margin-bottom-8" role="alert">
+            <h2 class="assessment-alert__heading govuk-heading-l" autofocus>Assessment complete</h2>
+            <p class="govuk-body">You have marked this assessment as complete.</p>
+            <p class="govuk-body">
+                It may now be selected for quality assurance (QA). New scores and rationales could be added if this
+                happens.
+            </p>
+            {% if g.access_controller.is_lead_assessor %}
+                {{ link_to_download_contract_docs(csrf_token, application_id) }}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+{% endmacro %}

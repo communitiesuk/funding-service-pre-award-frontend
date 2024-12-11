@@ -1,0 +1,95 @@
+{% extends "assess/base.html" %}
+{% from "assess/macros/theme.html" import theme %}
+{% from "assess/macros/sub_criteria_navbar.html" import navbar %}
+{% from "assess/macros/banner_summary.html" import banner_summary %}
+{% from "assess/macros/flag_application_button.html" import flag_application_button %}
+{% from "assess/macros/comments.html" import comment %}
+{% from "assess/macros/comments_edit_box.html" import edit_comment_box %}
+{% from "assess/macros/comments_box.html" import comment_box %}
+{% from "assess/macros/sub_criteria_heading.html" import sub_criteria_heading %}
+{% from "assess/macros/migration_banner.html" import migration_banner %}
+{%- from "govuk_frontend_jinja/components/pagination/macro.html" import govukPagination -%}
+
+{% set pageHeading -%}
+{% if comment_form.comment.errors %}
+Error:
+{% endif %}
+{% if current_theme.id == sub_criteria.id %}
+{{ sub_criteria.name }} – {{ sub_criteria.project_name }}
+{% else %}
+{{ current_theme.name }} – {{ sub_criteria.name }} – {{ sub_criteria.project_name }}
+{% endif %}
+{% endset %}
+
+{% block header %}
+{% include "assess/components/header.html" %}
+{% endblock header %}
+
+{% block content %}
+{% if comment_form.comment.errors %}
+    <div class="govuk-error-summary" data-module="govuk-error-summary">
+        <div role="alert">
+        <h2 class="govuk-error-summary__title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                    <li>
+                        <a href="#comments">Add a comment</a>
+                    </li>
+            </ul>
+        </div>
+        </div>
+    </div>
+{% endif %}
+
+{% if is_flaggable and g.access_controller.has_any_assessor_role %}
+    {{ flag_application_button(application_id) }}
+{% endif %}
+
+{% if migration_banner_enabled %}
+    {{ migration_banner() }}
+{% endif %}
+
+{{ sub_criteria_heading(sub_criteria)}}
+
+<div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            {{ navbar(application_id, sub_criteria, current_theme.id) }}
+        </div>
+        <div class="theme govuk-grid-column-two-thirds">
+            <h3 class="govuk-heading-m response-title">Applicant's response</h3>
+            {{ theme(answers_meta)}}
+            {{ comment(comments, False) }}
+            {% if display_comment_box != True and not display_comment_edit_box %}
+                <a
+                    id="comment"
+                    class="govuk-button secondary-button govuk-!-margin-top-2 govuk-!-margin-bottom-6"
+                    type="submit"
+                    data-module="govuk-button"
+                    href="{{ url_for(
+                        "assessment_bp.display_sub_criteria",
+                        application_id=application_id,
+                        sub_criteria_id=sub_criteria.id,
+                        theme_id=current_theme.id,
+                        add_comment="1",
+                        _anchor="comment"
+                    ) }}"
+                >
+                    {% if comments == None %} Add a comment
+                    {% else %} Add another comment
+                    {% endif %}
+{# djlint:off #}</a>{# djlint:on #}
+                {% endif %}
+
+                {% if display_comment_box == True %}
+                    {{ comment_box(comment_form) }}
+                {% endif %}
+                {% if display_comment_edit_box %}
+                    {{ edit_comment_box(comments, comment_id, comment_form)}}
+                {% endif %}
+
+                {% include "assess/components/sub_section_pagination.html" %}
+        </div>
+</div>
+{% endblock content %}

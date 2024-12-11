@@ -31,24 +31,3 @@ The assessment app protects different parts of functionality by interrogating th
 
 ## Troubleshooting
 - If despite setting up the development user above you still see a 'you do not have the right roles' message when accessing the assessment frontend locally, try in an incognito window. For example if you have outlook on the web open in one tab and navigate to local assessment in another, assessment sees your outlook session, which doesn't contain any FSD roles, and will use that. Using incognito will fix this.
-
-# Builds and Deploys
-Details on how our pipelines work and the release process is available [here](https://dluhcdigital.atlassian.net/wiki/spaces/FS/pages/73695505/How+do+we+deploy+our+code+to+prod)
-## Paketo
-Paketo is used to build the docker image which gets deployed to our test and production environments. Details available [here](https://github.com/communitiesuk/funding-service-design-workflows/blob/main/readmes/python-repos-paketo.md)
-
-`envs` for the `docker run` command needs to contain values for each of the following:
-
-* `AUTHENTICATOR_HOST`
-* `ACCOUNT_STORE_API_HOST`
-* `APPLICATION_STORE_API_HOST`
-* `NOTIFICATION_SERVICE_HOST`
-* `FUND_STORE_API_HOST`
-* `SENTRY_DSN`
-* `GITHUB_SHA`
-* `RSA256_PUBLIC_KEY_BASE64`
-
-## Copilot
-Copilot is used for infrastructure deployment. Instructions are available [here](https://github.com/communitiesuk/funding-service-design-workflows/blob/main/readmes/python-repos-copilot.md), with the following values for the assessment frontend:
-- service-name: fsd-assessment
-- image-name: funding-service-design-assessment

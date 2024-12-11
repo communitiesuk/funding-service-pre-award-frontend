@@ -1,0 +1,112 @@
+<meta name="description" content="{{ service_meta_description }}">
+<meta name="keywords" content="{{ service_meta_keywords }}">
+<meta name="author" content="{{ service_meta_author }}">
+<!--[if gt IE 8]><!--><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assess/govuk-frontend/govuk-frontend-4.7.0.min.css') }}" /><!--<![endif]-->
+<!--[if IE 8]><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assess/govuk-frontend/govuk-frontend-ie8-4.7.0.min.css') }}" /><![endif]-->
+{% assets "default_styles" %}
+    <!--[if gt IE 8]><!--><link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"><!--<![endif]-->
+{% endassets %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='assess/styles/landing.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='assess/styles/govuk-overrides.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='assess/styles/comments.css') }}">
+{% assets "main_js" %}
+    <script nonce="{{ csp_nonce() }}" type="text/javascript" src="{{ ASSET_URL }}" defer></script>
+{% endassets %}
+
+{% block bodyStart %}
+<div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="Cookies on Access Funding"
+    id="cookie-banner" hidden>
+    <div class="govuk-cookie-banner__message govuk-width-container" id="cookies-choice-msg">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h2 class="govuk-cookie-banner__heading govuk-heading-m">Cookies on Access Funding</h2>
+                <div class="govuk-cookie-banner__content">
+                    <p class="govuk-body">We use some essential cookies to make this service work.</p>
+                    <p class="govuk-body">We'd also like to use analytics cookies so we can understand how you use the service and make improvements.</p>
+                </div>
+            </div>
+        </div>
+        <div class="govuk-button-group">
+            <button type="button" class="govuk-button" data-module="govuk-button" id="accept_cookies_btn">
+                Accept analytics cookies
+            </button>
+            <button type="button" class="govuk-button" data-module="govuk-button" id="deny_cookies_btn">
+                Reject analytics cookies
+            </button>
+            <a class="govuk-link" href="{{ url_for('shared_bp.cookie_policy') }}">View cookies</a>
+        </div>
+    </div>
+    <div class="govuk-cookie-banner__message govuk-width-container" role="alert" id="cookies-accepted-msg" hidden>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-cookie-banner__content">
+                    <p class="govuk-body">You've accepted analytics cookies. You can <a class="govuk-link"
+                            href="{{ url_for('shared_bp.cookie_policy') }}">change your cookie settings</a> at any time.</p>
+                </div>
+            </div>
+        </div>
+        <div class="govuk-button-group">
+            <button type="button" class="govuk-button" data-module="govuk-button" name="cookies-hide-btn">
+                Hide cookie message
+            </button>
+        </div>
+    </div>
+    <div class="govuk-cookie-banner__message govuk-width-container" role="alert" id="cookies-rejected-msg" hidden>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-cookie-banner__content">
+                    <p class="govuk-body">You've rejected analytics cookies. You can <a class="govuk-link"
+                            href="{{ url_for('shared_bp.cookie_policy') }}">change your cookie settings</a> at any time.</p>
+                </div>
+            </div>
+        </div>
+        <div class="govuk-button-group">
+            <button type="button" class="govuk-button" data-module="govuk-button" name="cookies-hide-btn">
+                Hide cookie message
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock bodyStart %}
+
+<script nonce="{{ csp_nonce() }}" type="text/javascript" src="{{ url_for('static', filename='assess/js/fsd_cookies.js') }}"></script>
+<script nonce="{{ csp_nonce() }}">
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments) }
+
+    function initCookieState() {
+        const localConsentMode = readConsentCookie();
+
+        if (!localConsentMode) {
+            gtag('consent', 'default', DEFAULT_CONSENT);
+            unhideCookiesMessage();
+        } else {
+            gtag('consent', 'default', readConsentCookie());
+        }
+
+        document.getElementById("accept_cookies_btn").addEventListener("click", acceptCookies);
+        document.getElementById("deny_cookies_btn").addEventListener("click", denyCookies);
+        document.getElementsByName("cookies-hide-btn").forEach(element => {
+            element.addEventListener("click", hideCookiesMessage);
+        });
+    }
+
+    initCookieState();
+</script>
+
+<!-- Google Tag Manager -->
+<script nonce="{{ csp_nonce() }}">(function (w, d, s, l, i) {
+    w[l] = w[l] || [];
+    w[l].push({
+        'gtm.start':
+            new Date().getTime(), event: 'gtm.js'
+    });
+    var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+    j.async = true;
+    j.src =
+        'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+    f.parentNode.insertBefore(j, f);
+})(window, document, 'script', 'dataLayer', 'GTM-M5J9Q8HV');
+</script>
+<!-- End Google Tag Manager -->

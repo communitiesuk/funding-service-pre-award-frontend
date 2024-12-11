@@ -1,0 +1,30 @@
+{% from "assess/macros/comments_box.html" import comment_box %}
+
+{% macro edit_comment_box(comments, comment_id, comment_form) %}
+
+  {# Using namespace objects to access variables set outside of for loop #}
+  {% set comment_text = namespace(str = "") %}
+  {% set comment_author = namespace(str = "") %}
+  {% set comment_date = namespace(str = "") %}
+
+  {% for comment_list in comments.values() %}
+    {% for comment in comment_list %}
+        {% if comment.id == comment_id %}
+          {% set comment_text.str = comment.updates[-1]['comment'] %}
+          {% set comment_author.str = comment.full_name + " (" + comment.highest_role|all_caps_to_human + ") "+ comment.email_address %}
+          {% set comment_date.str = comment.date_created|utc_to_bst %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+
+  {% set HtmlData %}
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Edit comment</h2>
+    <div class="comment-group">
+      <p class="govuk-body">{{ comment_text.str }}</p>
+      <p class="govuk-body-s">{{ comment_author.str }}</p>
+      <p class="govuk-body-s">{{ comment_date.str }}</p>
+    </div>
+  {% endset %}
+
+  {{ comment_box(comment_form, HtmlData, comment_text.str) }}
+{% endmacro %}

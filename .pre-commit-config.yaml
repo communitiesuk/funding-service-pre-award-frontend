@@ -25,3 +25,10 @@ repos:
             "--disable-plugin",
             "Base64HighEntropyString",
           ]
+# djLint moved in from assess - to apply as a precommit hook we should make sure it works with
+# apply templates
+# -   repo: https://github.com/Riverside-Healthcare/djLint
+#     rev: v1.24.0
+#     hooks:
+#       - id: djlint-jinja
+#         types_or: ['html', 'jinja']

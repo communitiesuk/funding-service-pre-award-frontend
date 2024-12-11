@@ -1,0 +1,23 @@
+{% extends "assess/base.html" %}
+
+{% block pageTitle %}Sorry, this service is unavailable – {{ service_title }}{% endblock pageTitle %}
+
+{% block content %}
+    <div class="fsd-login-banner-background">
+    </div>
+
+    <div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <h1 class="govuk-heading-l">Sorry, this service is unavailable</h1>
+          <p class="govuk-body">We are carrying out essential maintenance to the funding assessment tool.</p>
+          <p class="govuk-body">You will be able to use the service again {{ maintenance_end_time }}.</p>
+          <p class="govuk-body">
+            <a class="govuk-link" href="mailto:fundingservice.support@communities.gov.uk">Contact the Funding Service Design team</a> if you need urgent support during this time.
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+{% endblock content %}

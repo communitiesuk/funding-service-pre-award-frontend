@@ -1,0 +1,66 @@
+{% from "govuk_frontend_jinja/components/input/macro.html" import govukInput %}
+{% from "assess/macros/sortable_table_header.html" import sortable_table_header %}
+{% from "assess/macros/filter_options_eoi.html" import filter_options %}
+{% from "assess/macros/application_status_column.html" import application_status_column %}
+{% from "assess/macros/tags_table.html" import tags_table %}
+
+{% macro render_query_params(query_params) -%}
+{% for key, value in query_params.items() %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+{% endfor %}
+{%- endmacro %}
+
+{% macro render(application_overviews, round_details, query_params, asset_types,
+   assessment_statuses,countries, regions, local_authorities, show_clear_filters,
+    sort_column, sort_order, tag_option_groups, tags, tagging_purpose_config) -%}
+<nav class="search-bar-flex-container">
+  <form method="get" class="govuk-!-width-full">
+    {{ filter_options(
+      query_params,
+      'Search reference',
+      round_details,
+      show_clear_filters,
+      tag_option_groups
+    ) }}
+  </form>
+</nav>
+
+{% if not application_overviews %}
+<div role="status" aria-live="assertive" class="govuk-!-margin-top-4">
+  <p class="govuk-body" autofocus>
+    <strong>No matching results.</strong>
+  </p>
+  <p class="govuk-body">Improve your results by:</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>removing filters</li>
+    <li>double-checking your spelling</li>
+  </ul>
+</div>
+{% else %}
+<table class="govuk-table govuk-!-margin-top-4" id="application_overviews_table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header">
+          Reference
+      </th>
+      {{ sortable_table_header('organisation_name', 'Organisation name', sort_order, sort_column, round_details, query_params) }}
+      {{ sortable_table_header('lead_contact_email', 'Email address', sort_order, sort_column, round_details, query_params) }}
+      {{ sortable_table_header('submission_date', 'Submission date', sort_order, sort_column, round_details, query_params) }}
+      {{ sortable_table_header('tags', 'Tags', sort_order, sort_column, round_details, query_params) }}
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+        {% for overview in application_overviews %}
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ overview.short_id[-6:] }}</td>
+                <td class="govuk-table__cell"><a class="govuk-link" data-qa="organisation_name" href="{{ url_for('assessment_bp.application',application_id=overview.application_id) }}">{{ overview.organisation_name }}</a></td>
+                <td class="govuk-table__cell">{{ overview.lead_contact_email }}</td>
+                <td class="govuk-table__cell">{{ overview.date_submitted|slash_separated_day_month_year }}</td>
+                {{ tags_table(tags[overview.application_id], tagging_purpose_config, query_params.show_tags == "ON") }}
+
+            </tr>
+        {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{%- endmacro %}

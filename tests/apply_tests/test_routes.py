@@ -128,6 +128,7 @@ def test_inject_service_name_simpler(
     request_mock.view_args = view_args
     request_mock.args = args
     request_mock.form = form
+    request_mock.host = app.config['APPLY_HOST']
     with app.app_context():
         render_template("apply/fund_start_page.html")
     assert len(templates_rendered) == 1

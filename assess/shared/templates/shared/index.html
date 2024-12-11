@@ -1,0 +1,29 @@
+{% extends "assess/base.html" %}
+{%- from 'govuk_frontend_jinja/components/inset-text/macro.html' import govukInsetText -%}
+{%- from "govuk_frontend_jinja/components/button/macro.html" import govukButton -%}
+{% block content %}
+    <div class="fsd-login-banner-background">
+    </div>
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <div class="govuk-grid-column-two-thirds">
+                    <h1 class="govuk-heading-xl">Welcome to the assessment tool</h1>
+                    <p class="govuk-body">Here you can:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>assess applications end to end</li>
+                        <li>comment on specific applicant responses</li>
+                        <li>monitor the assessment progress of a fund</li>
+                    </ul>
+                    {{ govukButton({
+                    "isStartButton": false,
+                    "href" : login_url,
+                    "text": "Log in"
+                    }) }}
+                    <h2 class="govuk-heading-l">Get help</h2>
+                    <p class="govuk-body">If you are having issues logging in, email the FSD support team at <a class="govuk-link" href="mailto:fundingservice.support@communities.gov.uk">fundingservice.support@communities.gov.uk</a></p>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock content %}
