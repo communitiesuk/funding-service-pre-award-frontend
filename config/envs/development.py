@@ -44,6 +44,8 @@ class DevelopmentConfig(DefaultConfig):
         "full_name": "Development User",
         "email": "dev@example.com",
         "roles": [
+            "LPDF_ASSESSOR",
+            "LPDF_LEAD_ASSESSOR",
             "COF_LEAD_ASSESSOR",
             "COF_ASSESSOR",
             "COF_COMMENTER",
@@ -70,6 +72,7 @@ class DevelopmentConfig(DefaultConfig):
             "CTDF_ASSESSOR",
         ],
         "highest_role_map": {
+            "LPDF": DEBUG_USER_ROLE,
             "CTDF": DEBUG_USER_ROLE,
             "COF": DEBUG_USER_ROLE,
             "NSTF": DEBUG_USER_ROLE,
