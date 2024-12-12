@@ -6,6 +6,3 @@ from testing.mocks.mocks.redis_magic_links import (  # noqa
     mock_redis_magic_links,  # noqa
 )  # noqa
 from testing.mocks.mocks.redis_sessions import mock_redis_sessions  # noqa
-from testing.mocks.mocks.selenium_chrome_driver import (  # noqa
-    selenium_chrome_driver,  # noqa
-)  # noqa
