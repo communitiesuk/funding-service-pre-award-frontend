@@ -3872,4 +3872,3 @@ msgstr ""
 #: apply/templates/apply/partials/tasklist_submit.html:12
 msgid "Submit your application"
 msgstr ""
-

@@ -4705,4 +4705,3 @@ msgstr "Cyflwyno'ch cais"
 #~ " atodiadau drwy e-bost. Dim ond "
 #~ "drwy'r gwasanaeth hwn y byddwn yn "
 #~ "derbyn ceisiadau."
-
