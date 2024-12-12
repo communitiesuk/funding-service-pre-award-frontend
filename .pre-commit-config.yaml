@@ -15,7 +15,7 @@ repos:
       # Run the formatter.
       - id: ruff-format
   - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.5.0
+    rev: v1.4.0
     hooks:
       - id: detect-secrets
         args:
@@ -25,6 +25,7 @@ repos:
             "--disable-plugin",
             "Base64HighEntropyString",
           ]
+        exclude: tests/keys/rsa256
 # djLint moved in from assess - to apply as a precommit hook we should make sure it works with
 # apply templates
 # -   repo: https://github.com/Riverside-Healthcare/djLint
