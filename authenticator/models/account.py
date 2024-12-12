@@ -5,11 +5,11 @@ from flask import current_app
 from fsd_utils.config.notify_constants import NotifyConstants
 
 import config
+from authenticator.models.data import get_account_data, get_data, get_round_data, post_data, put_data
+from authenticator.models.fund import FundMethods
+from authenticator.models.magic_link import MagicLinkMethods
+from authenticator.models.notification import Notification
 from config import Config
-from models.data import get_account_data, get_data, get_round_data, post_data, put_data
-from models.fund import FundMethods
-from models.magic_link import MagicLinkMethods
-from models.notification import Notification
 
 
 @dataclass

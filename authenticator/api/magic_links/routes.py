@@ -8,7 +8,7 @@ from fsd_utils.authentication.decorators import login_requested
 from models.account import AccountMethods
 from models.magic_link import MagicLinkMethods
 
-from api.session.auth_session import AuthSessionBase
+from authenticator.api.session.auth_session import AuthSessionBase
 from common.blueprints import Blueprint
 from config import Config
 

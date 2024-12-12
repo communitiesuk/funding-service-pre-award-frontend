@@ -1,7 +1,8 @@
 import pytest
-from models.account import Account, AccountMethods
-from models.fund import Fund
-from models.round import Round
+
+from authenticator.models.account import Account, AccountMethods
+from authenticator.models.fund import Fund
+from authenticator.models.round import Round
 
 test_user_id = "test_id"
 test_user_email = "john@example.com"
@@ -15,7 +16,7 @@ def mock_get_account(mocker, request):
     new_account = request.node.get_closest_marker("new_account")
 
     mocker.patch(
-        "models.account.AccountMethods.get_account",
+        "authenticator.models.account.AccountMethods.get_account",
         return_value=Account.from_json(
             {
                 "account_id": test_user_id,
@@ -34,7 +35,7 @@ def mock_get_account(mocker, request):
 @pytest.fixture(scope="function")
 def mock_create_account(mocker):
     mocker.patch(
-        "models.account.post_data",
+        "authenticator.models.account.post_data",
         return_value={
             "account_id": test_user_id,
             "email_address": test_user_email,
@@ -47,7 +48,7 @@ def mock_create_account(mocker):
 @pytest.fixture(scope="function")
 def mock_update_account(mocker):
     mocker.patch(
-        "models.account.put_data",
+        "authenticator.models.account.put_data",
         return_value={
             "account_id": test_user_id,
             "email_address": "john.Doe@example.com",
@@ -95,7 +96,7 @@ class TestAccountMethods(object):
 
     def test_create_magic_link(self, mocker, mock_get_account, flask_test_client, mock_redis_magic_links):
         mocker.patch(
-            "models.account.FundMethods.get_fund",
+            "authenticator.models.account.FundMethods.get_fund",
             return_value=Fund(
                 name="test fund",
                 fund_title="hello",
@@ -104,8 +105,8 @@ class TestAccountMethods(object):
                 description="asdfasdfasdf",
             ),
         )
-        mocker.patch("models.account.get_round_data", return_value=Round(contact_email="asdf@asdf.com"))
-        mock_send_notification = mocker.patch("models.account.Notification.send", return_value=True)
+        mocker.patch("authenticator.models.account.get_round_data", return_value=Round(contact_email="asdf@asdf.com"))
+        mock_send_notification = mocker.patch("authenticator.models.account.Notification.send", return_value=True)
 
         result = AccountMethods.get_magic_link(
             email=test_user_email,

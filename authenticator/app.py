@@ -8,16 +8,16 @@ from flask_babel import Babel, gettext
 from flask_redis import FlaskRedis
 from flask_session import Session
 from flask_talisman import Talisman
-from frontend.magic_links.filters import datetime_format
 from fsd_utils import LanguageSelector, init_sentry
 from fsd_utils.healthchecks.checkers import FlaskRunningChecker, RedisChecker
 from fsd_utils.healthchecks.healthcheck import Healthcheck
 from fsd_utils.logging import logging
 from fsd_utils.services.aws_extended_client import SQSExtendedClient
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
-from models.fund import FundMethods
 
 from common.locale_selector.get_lang import get_lang
+from authenticator.frontend.magic_links.filters import datetime_format
+from authenticator.models.fund import FundMethods
 from config import Config
 
 redis_mlinks = FlaskRedis(config_prefix="REDIS_MLINKS")
@@ -115,14 +115,14 @@ def create_app() -> Flask:
         return dict(get_service_title=_get_service_title)
 
     with flask_app.app_context():
-        from frontend.default.routes import (
+        from authenticator.frontend.default.routes import (
             default_bp,
             internal_server_error,
             not_found,
         )
-        from frontend.magic_links.routes import magic_links_bp
-        from frontend.sso.routes import sso_bp
-        from frontend.user.routes import user_bp
+        from authenticator.frontend.magic_links.routes import magic_links_bp
+        from authenticator.frontend.sso.routes import sso_bp
+        from authenticator.frontend.user.routes import user_bp
 
         flask_app.register_error_handler(404, not_found)
         flask_app.register_error_handler(500, internal_server_error)

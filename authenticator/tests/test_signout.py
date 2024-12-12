@@ -6,8 +6,8 @@ from unittest.mock import PropertyMock, patch
 
 import pytest
 from bs4 import BeautifulSoup
-from security.utils import create_token, validate_token
 
+from authenticator.security.utils import create_token, validate_token
 from config.envs.default import SafeAppConfig
 
 
@@ -43,7 +43,7 @@ class TestSignout:
         flask_test_client.set_cookie("/", "fsd_user_token", "invalid_token")
         flask_test_client.set_cookie("/", "user_fund_and_round", "fund_round")
 
-        with patch("api.session.auth_session.validate_token") as mock_validate_token:  # noqa
+        with patch("authenticator.api.session.auth_session.validate_token") as mock_validate_token:  # noqa
             mock_validate_token.return_value = {
                 "fund": "test_fund",
                 "round": "test_round",

@@ -4,8 +4,9 @@ from unittest.mock import MagicMock
 import boto3
 import pytest
 from fsd_utils.services.aws_extended_client import SQSExtendedClient
-from models.notification import Config, Notification, NotificationError
 from moto import mock_aws
+
+from authenticator.models.notification import Config, Notification, NotificationError
 
 
 @pytest.fixture
@@ -30,7 +31,7 @@ def test_notification_send_disabled(app_context, disable_notifications, caplog):
 
 @mock_aws
 def test_notification_send_success(app_context, monkeypatch, enable_notifications):
-    with mock.patch("models.notification.Notification._get_sqs_client") as mock_get_sqs_client:
+    with mock.patch("authenticator.models.notification.Notification._get_sqs_client") as mock_get_sqs_client:
         template_type = "welcome"
         template_type = "welcome"
         to_email = "test@example.com"
@@ -64,7 +65,7 @@ def test_notification_send_success(app_context, monkeypatch, enable_notification
 
 @mock_aws
 def test_notification_send_failure(app_context, monkeypatch, enable_notifications):
-    with mock.patch("models.notification.Notification._get_sqs_client") as mock_get_sqs_client:
+    with mock.patch("authenticator.models.notification.Notification._get_sqs_client") as mock_get_sqs_client:
         template_type = "welcome"
         to_email = "test@example.com"
         content = {"name": "John"}

@@ -1,7 +1,6 @@
 from unittest import mock
 
-from models.fund import Fund, FundMethods
-
+from authenticator.models.fund import Fund, FundMethods
 from config.envs.default import DefaultConfig
 from config.envs.unit_test import UnitTestConfig
 
@@ -26,11 +25,11 @@ class TestFund:
             }
         )
         # Mock request object with query parameters
-        mock_request = mocker.patch("models.fund.request")
+        mock_request = mocker.patch("authenticator.models.fund.request")
         mock_request.args.get = lambda arg: fund_short_name
         # Call the method and check the output
         with mock.patch(
-            "models.fund.FundMethods.get_fund",
+            "authenticator.models.fund.FundMethods.get_fund",
             return_value=mock_fund,
         ) as mock_get_fund:
             FundMethods.get_service_name()
@@ -39,11 +38,11 @@ class TestFund:
     def test_get_service_name_for_none_short_name(self, app_context, mocker):
         fund_short_name = None
         # Mock request object with query parameters
-        mock_request = mocker.patch("models.fund.request")
+        mock_request = mocker.patch("authenticator.models.fund.request")
         mock_request.args.get = lambda arg: fund_short_name
         # Call the method and check the output
         with mock.patch(
-            "models.fund.FundMethods.get_fund",
+            "authenticator.models.fund.FundMethods.get_fund",
             return_value=None,
         ) as mock_get_fund:
             result = FundMethods.get_service_name()
@@ -52,7 +51,7 @@ class TestFund:
 
     def test_get_fund_success(self, app_context):
         # Mock the get_data function to return a response with a valid "id"
-        with mock.patch("models.fund.get_data") as mock_get_data:
+        with mock.patch("authenticator.models.fund.get_data") as mock_get_data:
             mock_get_data.return_value = {
                 "id": 1234,
                 "name": "Test Fund",
@@ -76,7 +75,7 @@ class TestFund:
 
     def test_get_fund_failure(self, app_context):
         # Mock the get_data function to return a response with a valid "id"
-        with mock.patch("models.fund.get_data") as mock_get_data:
+        with mock.patch("authenticator.models.fund.get_data") as mock_get_data:
             mock_get_data.return_value = {}
 
             # Call the get_fund function with a valid fund short name

@@ -6,8 +6,8 @@ import requests
 from flask import current_app
 
 from common.locale_selector.get_lang import get_lang
+from authenticator.models.round import Round
 from config import Config
-from models.round import Round
 
 
 def api_call(endpoint: str, method: str = "GET", params: dict = None):
