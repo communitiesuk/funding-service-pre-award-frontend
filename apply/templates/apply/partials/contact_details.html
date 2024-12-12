@@ -1,10 +1,13 @@
-{% macro contact_details(apply_service_desk_portal, contact_us_phone, contact_us_text_phone, opening_days, opening_time) %}
+{% macro contact_details(contact_us_email_address, contact_us_phone, contact_us_text_phone, opening_days, opening_time) %}
 
-    {% if apply_service_desk_portal %}
-        <h3 class="govuk-heading-s">{% trans %}Please contact us through our {% endtrans %}<a class="govuk-link" href="{{ apply_service_desk_portal }}">
-            {% trans %}support desk{% endtrans %}
-        </a></h3>
+    {% if contact_us_email_address %}
+        <h3 class="govuk-heading-s">{% trans %}Email{% endtrans %}</h3>
         <ul class="govuk-list">
+            <li>
+                <a class="govuk-link" href="mailto:{{ contact_us_email_address }}">
+                    {{ contact_us_email_address }}
+                </a>
+            </li>
             <li>
                 {{ opening_time }}: {{ opening_days }} ({% trans %}except public holidays{% endtrans %})
             </li>

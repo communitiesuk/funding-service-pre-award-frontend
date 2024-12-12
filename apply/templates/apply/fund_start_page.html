@@ -75,13 +75,13 @@
                         )}}">{% trans %}contact us.{% endtrans %}</a>
                 </p>
                 {% else %}
-                <p class="govuk-body">{% trans %}If you need help, contact us through our {% endtrans %}<a class="govuk-link" href="https://mhclgdigital.atlassian.net/servicedesk/customer/portal/5/group/68">
-                        {% trans %}support desk{% endtrans %}
-                    </a>
+                <p class="govuk-body">
+                    {% trans %}If you need help, email us at{% endtrans %}
+                    <a class="govuk-link" href="mailto:{{ contact_us_email_address }}">{{ contact_us_email_address }}</a>
                 </p>
                 {% endif %}
                 <p class="govuk-body">
-                    {% trans %}Do not send any applications or attachments from the service desk portal. We'll only accept applications through this service.{% endtrans %}
+                    {% trans %}Do not send any applications or attachments by email. We'll only accept applications through this service.{% endtrans %}
                 </p>
             {% endif %}
 

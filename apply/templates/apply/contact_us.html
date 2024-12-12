@@ -22,13 +22,15 @@
 
             {% if round_data.contact_us_banner %}
                 {{ round_data.contact_us_banner | safe }}
+            {% elif fund_name %}
+                <p class="govuk-body">{% trans %}Contact the{% endtrans %} {{ fund_name }} {% trans %}if you have any questions{% endtrans %}.</p>
             {% else %}
                 <p class="govuk-body">{% trans %}Contact us if you have any questions{% endtrans %}.</p>
             {% endif %}
 
             {% if round_data %}
                 {{ contact_details(
-                            "https://mhclgdigital.atlassian.net/servicedesk/customer/portal/5/group/68",
+                            round_data.contact_email if not round_data.contact_us_banner else "fundingservice.support@communities.gov.uk",
                             round_data.contact_phone,
                             round_data.contact_phone,
                             round_data.support_days,
@@ -37,7 +39,7 @@
                 }}
             {% else %}
                 {{ contact_details(
-                    "https://mhclgdigital.atlassian.net/servicedesk/customer/portal/5/group/68",
+                    "fundingservice.support@communities.gov.uk",
                     "",
                     "",
                     "9am to 5pm",

@@ -23,8 +23,9 @@
     <h1 class="govuk-heading-l">Get help</h1>
     <p class="govuk-body">Problems with the assessment tool?</p>
     {% if contact_details %}
-    <p class="govuk-body">If you need help using the assessment service or experience any technical problems, contact  us at <a class="govuk-link"
-                                    href="https://mhclgdigital.atlassian.net/servicedesk/customer/portal/5/group/70">support desk</a>
+    <p class="govuk-body">Email <a class="govuk-link"
+                                    href="mailto:{{ contact_details.email_address }}">
+        {{ contact_details.email_address }}</a>
     </p>
     {% endif %}
     {% if support_availability %}
