@@ -36,13 +36,13 @@
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
-                    {% trans %}Help with filling out your application{% endtrans %}
+                    {% trans %}Help completing your application{% endtrans %}
                 </span>
             </summary>
             <div class="govuk-details__text">
                 {{ application_guidance | safe if application_guidance }}
 
-                <h2 class="govuk-heading govuk-heading-s">
+                <h2 class="govuk-heading-s">
                     {% trans %}Moving through the form{% endtrans %}
                 </h2>
                 <p class="govuk-body">
@@ -52,14 +52,17 @@
                     {% trans %}You do not have to complete it in order, or all at once.{% endtrans %}
                 </p>
                 <p class="govuk-body">
-                    {% trans %}When you have written something in every field in a section, the section will be marked as complete. You can still change your responses in sections that are marked as complete.{% endtrans %}
+                    {% trans %}When you have written something in every field in a section, you can mark the section as complete. You can still change your responses in sections that are marked as complete.{% endtrans %}
                 </p>
 
-                <h2 class="govuk-heading govuk-heading-s">
+                <h2 class="govuk-heading-s">
                     {% trans %}Saving progress and making changes{% endtrans %}
                 </h2>
                 <p class="govuk-body">
-                    {% trans %}Your work will not save automatically. To make sure you do not lose anything, select Save and continue regularly, and always before you go back or close your internet browser window.{%
+                    {% trans %}Your work will not save automatically.{% endtrans %}
+                </p>
+                <p class="govuk-body">
+                    {% trans %}To make sure you do not lose anything, select Save and continue regularly, and always before you go back or close your internet browser window.{%
                     endtrans %}
                 </p>
                 <p class="govuk-body">
@@ -74,24 +77,21 @@
                 </h2>
                 {% if is_expression_of_interest %}
                     <p class="govuk-body">
-                        {% trans %}When you have completed all sections, you'll be able to submit your expression of interest.{% endtrans %}
+                        {% trans %}You will not be able to submit your expression of interest once you have completed all the sections.{% endtrans %}
                     </p>
                     <p class="govuk-body">
-                        {% trans %}Once you have submitted your expression of interest, you'll not be able to edit, add or change any sections.{% endtrans %}
+                        {% trans %}You will not be able to edit, add or change any sections once you have submitted your expression of interest.{% endtrans %}
                     </p>
                 {% else %}
                     <p class="govuk-body">
-                        {% trans %}When you have completed all sections, you'll be able to submit your application.{%
-                        endtrans %}
+                        {% trans %}You will be able to submit your application when you have completed all of the sections.{% endtrans %}
                     </p>
                     <p class="govuk-body">
-                        {% trans %}Once you have submitted your application, you'll not be able to edit, add or change any sections.{% endtrans %}
+                        {% trans %}You will not be able to edit, add or change any sections once you have submitted your application.{% endtrans %}
                     </p>
                 {% endif %}
 
-                <h2 class="govuk-heading govuk-heading-s">
-                    {% trans %}Get help{% endtrans %}
-                </h2>
+                <h2 class="govuk-heading-s">{% trans %}Get help{% endtrans %}</h2>
 
                 <p class="govuk-body">
                     {% if link_to_contact_us_page %}
@@ -104,18 +104,13 @@
                             )
                         }}">{% trans %}contact us.{% endtrans %}</a>
                     {% else %}
-                        {% trans %}If you have any questions about the form or the fund, contact us through our {% endtrans %}<a class="govuk-link" href="https://mhclgdigital.atlassian.net/servicedesk/customer/portal/5/group/68">{% trans %}support desk{% endtrans %}</a>
+                        {% trans %}If you have any questions about the form or the fund,{% endtrans %}<a class="govuk-link" href="https://mhclgdigital.atlassian.net/servicedesk/customer/portal/5/group/68">{% trans %} contact us through our support desk{% endtrans %}</a>
                     {% endif %}
                         </p>
-                        <p>{% trans %}Do not send any applications or attachments from the service desk portal. We'll only accept applications through this service.{% endtrans %}</p>
+                        <p>{% trans %}We only accept applications through this service. Do not send applications or attachments from the service desk portal.{% endtrans %}</p>
 
-                <h2 class="govuk-heading govuk-heading-s">
-                    {% trans %}How we'll use your information{% endtrans %}
-                </h2>
-                <p class="govuk-body">
-                    {% trans %}Read how we'll use the information from your application in our{% endtrans %} <a
-                        class="govuk-link" href="{{ privacy_url }}">{% trans %}privacy notice{% endtrans %}</a>.
-                </p>
+                <h2 class="govuk-heading-s">{% trans %}How we use your information{% endtrans %}</h2>
+                <p class="govuk-body">{% trans %}Read how we use the information from your application in our{% endtrans %} <a class="govuk-link" href="{{ privacy_url }}">{% trans %}privacy notice{% endtrans %}</a>.</p>
 
             </div>
         </details>
