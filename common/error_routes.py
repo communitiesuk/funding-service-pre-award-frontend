@@ -20,6 +20,9 @@ def not_found(error):
             unprotected_routes=["/", "/healthcheck", "/cookie_policy"],
         ) or redirect("/")
 
+    if request.host == current_app.config["AUTHENTICATOR_HOST"]:
+        return render_template("authenticator/404.html", is_error=True), 404
+
     return render_template(
         "apply/404.html",
         is_error=True,
@@ -31,5 +34,8 @@ def internal_server_error(error):
 
     if request.host == current_app.config["ASSESS_HOST"]:
         return render_template("assess/500.html", is_error=True), 500
+
+    if request.host == current_app.config["AUTHENTICATOR_HOST"]:
+        return render_template("authenticator/500.html", is_error=True), 500
 
     return render_template("apply/500.html", is_error=True), 500

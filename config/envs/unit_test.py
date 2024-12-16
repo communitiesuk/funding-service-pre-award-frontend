@@ -73,7 +73,6 @@ class UnitTestConfig(DefaultConfig):
     )
     SESSION_PERMANENT = False
     SESSION_USE_SIGNER = True
-    SESSION_COOKIE_SECURE = False
     ALLOW_ASSESSMENT_LOGIN_VIA_MAGIC_LINK = strtobool(getenv("ALLOW_ASSESSMENT_LOGIN_VIA_MAGIC_LINK", "False"))
     WTF_CSRF_ENABLED = False
 

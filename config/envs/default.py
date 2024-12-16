@@ -185,6 +185,7 @@ class DefaultConfig:
             "'sha256-W6+G9WX7ZWCn2Tdi1uHvgAuT45Y2OUJa9kqVxgAM+vM='",
             "'sha256-z+p4q2n8BOpGMK2/OMOXrTYmjbeEhWQQHC3SF/uMOyg='",
             "'sha256-GUQ5ad8JK5KmEWmROf3LZd9ge94daqNvd8xy9YS1iDw='",
+            "'sha256-qJr6rnZIepboaF/c9sFdugAE+I8xpVXVPeO/lk7/Yj0='",
             "https://tagmanager.google.com",
             "https://www.googletagmanager.com",
             "https://*.google-analytics.com",
@@ -194,13 +195,6 @@ class DefaultConfig:
             "https://*.google-analytics.com",
         ],  # APPLICATION_STORE_API_HOST_PUBLIC,
         "img-src": ["data:", "'self'", "https://ssl.gstatic.com"],
-    }
-
-    # Swagger Content Security Policy (less secure)
-    # - Allow inline scripts for swagger docs (for Talisman Config)
-    SWAGGER_CSP = {
-        "script-src": ["'self'", "'unsafe-inline'"],
-        "style-src": ["'self'", "'unsafe-inline'"],
     }
 
     # Talisman Config

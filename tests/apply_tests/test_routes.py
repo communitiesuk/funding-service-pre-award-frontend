@@ -255,7 +255,7 @@ def test_healthcheck(apply_test_client):
     response = apply_test_client.get("/healthcheck")
 
     expected_dict = {
-        "checks": [{"check_flask_running": "OK"}],
+        "checks": [{"check_flask_running": "OK"}, {"check_redis": "OK"}],
         "version": "abc123",
     }
     assert response.status_code == 200, "Unexpected status code"
