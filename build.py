@@ -3,8 +3,7 @@ import shutil
 import urllib.request
 import zipfile
 
-import assess_static_assets
-import authenticator_static_assets
+import static_assets
 
 
 def build_apply_assets():
@@ -127,21 +126,12 @@ def build_some_assess_assets(static_dist_root="static/assess"):
 
     # Copy over JS source
     os.makedirs("./static/assess/js")
-    shutil.copyfile("assess/static/src/js/fsd_cookies.js", "./static/assess/js/fsd_cookies.js")
+    shutil.copyfile("assess/static/src/assess/js/fsd_cookies.js", "./static/assess/js/fsd_cookies.js")
 
     # Delete temp files
     print("Deleting " + ASSETS_PATH)
     shutil.rmtree(ASSETS_PATH)
     os.remove(ZIP_FILE)
-
-
-def build_assess_assets(static_dist_root="static/assess", remove_existing=False):
-    if remove_existing:
-        relative_dist_root = "./" + static_dist_root
-        if os.path.exists(relative_dist_root):
-            shutil.rmtree(relative_dist_root)
-    build_some_assess_assets(static_dist_root=static_dist_root)
-    assess_static_assets.build_bundles(static_folder="static")
 
 
 def build_some_authenticator_assets(static_dist_root="static/authenticator", remove_existing=False) -> None:
@@ -192,20 +182,17 @@ def build_some_authenticator_assets(static_dist_root="static/authenticator", rem
     os.remove(ZIP_FILE)
 
 
-def build_authenticator_assets(static_dist_root="static/authenticator", remove_existing=False):
+def build_assess_authenticator_assets(remove_existing=False):
     if remove_existing:
-        relative_dist_root = "./" + static_dist_root
-        if os.path.exists(relative_dist_root):
-            shutil.rmtree(relative_dist_root)
-    build_some_authenticator_assets(static_dist_root=static_dist_root)
-    authenticator_static_assets.build_bundles(static_folder="static")
-
-
-if __name__ == "__main__":
-    build_assess_assets(remove_existing=True)
+        for static_dist_root in ["static/authenticator", "static/assess"]:
+            relative_dist_root = "./" + static_dist_root
+            if os.path.exists(relative_dist_root):
+                shutil.rmtree(relative_dist_root)
+    build_some_authenticator_assets(static_dist_root="static/authenticator")
+    build_some_assess_assets(static_dist_root="static/assess")
+    static_assets.build_bundles(static_folder="static")
 
 
 if __name__ == "__main__":
     build_apply_assets()
-    build_assess_assets()
-    build_authenticator_assets()
+    build_assess_authenticator_assets()

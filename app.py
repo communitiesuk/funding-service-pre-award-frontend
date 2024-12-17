@@ -17,8 +17,7 @@ from fsd_utils.services.aws_extended_client import SQSExtendedClient
 from fsd_utils.toggles.toggles import create_toggles_client, initialise_toggles_redis_store, load_toggles
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 
-import assess_static_assets
-import authenticator_static_assets
+import static_assets
 from apply.filters import (
     custom_format_datetime,
     date_format_short_month,
@@ -77,8 +76,7 @@ def create_app() -> Flask:  # noqa: C901
     # Bundle and compile assets
     assets = Environment()
     assets.init_app(flask_app)
-    assess_static_assets.init_assets(flask_app, auto_build=Config.ASSETS_AUTO_BUILD)
-    authenticator_static_assets.init_assets(flask_app, auto_build=Config.ASSETS_AUTO_BUILD)
+    static_assets.init_assets(flask_app, auto_build=Config.ASSETS_AUTO_BUILD)
 
     flask_app.jinja_loader = ChoiceLoader(
         [
