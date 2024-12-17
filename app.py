@@ -194,13 +194,13 @@ def create_app() -> Flask:  # noqa: C901
     flask_app.register_blueprint(scoring_bp, host=flask_app.config["ASSESS_HOST"])
     flask_app.register_blueprint(assessment_bp, host=flask_app.config["ASSESS_HOST"])
 
-    flask_app.register_blueprint(authenticator_default_bp, host=flask_app.config["AUTHENTICATOR_HOST"])
-    flask_app.register_blueprint(magic_links_bp, host=flask_app.config["AUTHENTICATOR_HOST"])
-    flask_app.register_blueprint(sso_bp, host=flask_app.config["AUTHENTICATOR_HOST"])
-    flask_app.register_blueprint(user_bp, host=flask_app.config["AUTHENTICATOR_HOST"])
-    flask_app.register_blueprint(api_magic_link_bp, host=flask_app.config["AUTHENTICATOR_HOST"])
-    flask_app.register_blueprint(api_sso_bp, host=flask_app.config["AUTHENTICATOR_HOST"])
-    flask_app.register_blueprint(api_sessions_bp, host=flask_app.config["AUTHENTICATOR_HOST"])
+    flask_app.register_blueprint(authenticator_default_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(magic_links_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(sso_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(user_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(api_magic_link_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(api_sso_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(api_sessions_bp, host=flask_app.config["AUTH_HOST"])
 
     @flask_app.url_defaults
     def inject_host_from_current_request(endpoint, values):
@@ -237,7 +237,7 @@ def create_app() -> Flask:  # noqa: C901
                 ),
                 support_desk_assess=Config.SUPPORT_DESK_ASSESS,
             )
-        elif request.host == current_app.config["AUTHENTICATOR_HOST"]:
+        elif request.host == current_app.config["AUTH_HOST"]:
             query_params = urlencode({"fund": request.args.get("fund", ""), "round": request.args.get("round", "")})
             return dict(
                 stage="beta",
@@ -269,7 +269,7 @@ def create_app() -> Flask:  # noqa: C901
             elif (
                 request.args
                 and (return_app := request.args.get("return_app"))
-                and request.host == current_app.config["AUTHENTICATOR_HOST"]
+                and request.host == current_app.config["AUTH_HOST"]
             ):
                 return Config.SAFE_RETURN_APPS[return_app].service_title
 

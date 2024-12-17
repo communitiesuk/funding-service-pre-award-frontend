@@ -1,6 +1,6 @@
 import uuid
 
-from flask import Blueprint, abort, current_app, g, redirect, render_template, request, url_for
+from flask import abort, current_app, g, redirect, render_template, request, url_for
 from fsd_utils.authentication.decorators import login_requested
 
 from authenticator.frontend.magic_links.forms import EmailForm
@@ -9,6 +9,7 @@ from authenticator.models.data import get_round_data
 from authenticator.models.fund import FundMethods
 from authenticator.models.magic_link import MagicLinkError, MagicLinkMethods
 from authenticator.models.notification import NotificationError
+from common.blueprints import Blueprint
 from config import Config
 
 magic_links_bp = Blueprint(

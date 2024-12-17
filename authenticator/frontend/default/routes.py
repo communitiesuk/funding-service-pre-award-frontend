@@ -1,6 +1,8 @@
 import traceback
 
-from flask import Blueprint, current_app, render_template
+from flask import current_app, render_template
+
+from common.blueprints import Blueprint
 
 from config import Config
 

@@ -1,6 +1,7 @@
-from flask import Blueprint, g, render_template, request, url_for
+from flask import g, render_template, request, url_for
 from fsd_utils.authentication.decorators import login_requested
 
+from common.blueprints import Blueprint
 from config import Config
 
 user_bp = Blueprint(
