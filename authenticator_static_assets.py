@@ -1,18 +1,17 @@
 """Compile static assets."""
 
+import os
 from os import path
 
 from flask import Flask
 from flask_assets import Bundle, Environment
 
 
-def init_assets(app=None, auto_build=False, static_folder="frontend/static/dist"):
-    app = app or Flask(__name__)
-    app.static_folder = static_folder  # config.Config.STATIC_FOLDER
-    # app.static_url_path = config.Config.STATIC_URL_PATH
+def init_assets(app=None, auto_build=False, static_folder="static"):
+    app = app or Flask(__name__, static_folder=static_folder)
     with app.app_context():
         env = Environment(app)
-        env.load_path = [path.join(path.dirname(__file__), "frontend/static/src")]
+        env.load_path = [path.join(path.dirname(__file__), "authenticator/frontend/static/src")]
         # env.set_directory(env_directory)
         # App Engine doesn't support automatic rebuilding.
         env.auto_build = auto_build
@@ -26,16 +25,17 @@ def init_assets(app=None, auto_build=False, static_folder="frontend/static/dist"
             "./js/fsd_cookies.js",
             "./js/components/**/*.js",
             filters="jsmin",
-            output="js/main.min.js",
+            output="authenticator/js/main.min.js",
         )
 
-        env.register("main_js", js)
+        env.register("authenticator_main_js", js)
 
         bundles = [js]
         return bundles
 
 
-def build_bundles(static_folder="frontend/static/dist"):
+def build_bundles(static_folder="static"):
+    os.makedirs(static_folder, exist_ok=True)
     bundles = init_assets(static_folder=static_folder)
     for bundle in bundles:
         bundle.build()
