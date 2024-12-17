@@ -1,6 +1,6 @@
-import frontend.magic_links.filters as filters
 import pytest
 
+import authenticator.frontend.magic_links.filters as filters
 from app import app
 
 

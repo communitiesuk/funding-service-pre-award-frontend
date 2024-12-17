@@ -1,7 +1,8 @@
 import pytest
 from flask import session
 from fsd_utils.authentication.utils import validate_token_rs256
-from testing.mocks.mocks.msal import (
+
+from tests.authenticator_tests.testing.mocks.mocks.msal import (
     ConfidentialClientApplication,
     HijackedConfidentialClientApplication,
     RolelessConfidentialClientApplication,
@@ -192,7 +193,7 @@ def test_sso_get_token_500_when_error_in_auth_code_flow(flask_test_client, mocke
     response = flask_test_client.get(endpoint)
 
     assert response.status_code == 500
-    assert "get-token flow failed with: {'error': 'some_error'}" in caplog.records[1].error_message
+    assert "get-token flow failed with: {'error': 'some_error'}" in caplog.records[1].message
     assert "some_error" not in response.text
 
 
@@ -229,10 +230,7 @@ def test_sso_get_token_sets_expected_fsd_user_token_cookie_claims(flask_test_cli
 
     response = flask_test_client.get(endpoint)
     assert response.status_code == 302
-    auth_cookie = next(
-        (cookie for cookie in flask_test_client.cookie_jar if cookie.name == expected_cookie_name),
-        None,
-    )
+    auth_cookie = flask_test_client.get_cookie(key=expected_cookie_name, domain="levellingup.gov.localhost")
 
     # Check auth token cookie is set and is valid
     assert (
@@ -264,7 +262,7 @@ def test_sso_get_token_redirects_to_return_app_login_url(
 
     response = flask_test_client.get(endpoint)
 
-    assert response.location == "http://post-award-frontend/login"
+    assert response.location == "https://find-monitoring-data.levellingup.gov.localhost:4001/"
 
 
 def test_sso_get_token_redirects_to_return_app_host_with_request_path(
@@ -286,7 +284,7 @@ def test_sso_get_token_redirects_to_return_app_host_with_request_path(
 
     response = flask_test_client.get(endpoint)
 
-    assert response.location == "http://post-award-frontend/foo"
+    assert response.location == "https://find-monitoring-data.levellingup.gov.localhost:4001/foo"
 
 
 def test_sso_get_token_400_abort_with_invalid_return_app(

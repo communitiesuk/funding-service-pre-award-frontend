@@ -5,10 +5,10 @@ Test magic links functionality
 import unittest.mock
 from unittest import mock
 
-import frontend
 import pytest
 from bs4 import BeautifulSoup
 
+import authenticator.frontend as frontend
 from app import app
 from authenticator.api.session.auth_session import AuthSessionBase
 from authenticator.frontend.magic_links.forms import EmailForm
@@ -62,10 +62,7 @@ class TestMagicLinks(AuthSessionBase):
         link_key = create_magic_link
         use_endpoint = f"/magic-links/{link_key}"
         flask_test_client.get(use_endpoint)
-        auth_cookie = next(
-            (cookie for cookie in flask_test_client.cookie_jar if cookie.name == expected_cookie_name),
-            None,
-        )
+        auth_cookie = flask_test_client.get_cookie(key=expected_cookie_name, domain="levellingup.gov.localhost")
 
         # Check auth token cookie is set and is valid
         assert (

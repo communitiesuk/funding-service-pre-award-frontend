@@ -16,7 +16,7 @@ class UnitTestConfig(DefaultConfig):
     USE_LOCAL_DATA = "True"
     SESSION_COOKIE_SECURE = False
     FUND_ID_COF = "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4"
-    COOKIE_DOMAIN = None
+    COOKIE_DOMAIN = ".levellingup.gov.localhost"
 
     # RSA 256 KEYS
     RSA256_PUBLIC_KEY_BASE64 = getenv("RSA256_PUBLIC_KEY_BASE64")

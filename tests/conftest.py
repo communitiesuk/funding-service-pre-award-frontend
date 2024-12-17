@@ -4,8 +4,8 @@ import platform
 import pytest
 
 from app import create_app
-from authenticator.testing.mocks.mocks.redis_magic_links import RedisMLinks
-from authenticator.testing.mocks.mocks.redis_sessions import RedisSessions
+from tests.authenticator_tests.testing.mocks.mocks.redis_magic_links import RedisMLinks
+from tests.authenticator_tests.testing.mocks.mocks.redis_sessions import RedisSessions
 
 if platform.system() == "Darwin":
     multiprocessing.set_start_method("fork")  # Required on macOSX

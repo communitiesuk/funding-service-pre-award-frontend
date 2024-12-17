@@ -5,8 +5,8 @@ import urllib.parse
 import requests
 from flask import current_app
 
-from common.locale_selector.get_lang import get_lang
 from authenticator.models.round import Round
+from common.locale_selector.get_lang import get_lang
 from config import Config
 
 
@@ -68,6 +68,7 @@ def local_api_call(endpoint: str, params: dict = None, method: str = "get"):
     api_data_json = os.path.join(
         Config.FLASK_ROOT,
         "tests",
+        "authenticator_tests",
         "api_data",
         method.lower() + "_endpoint_data.json",
     )

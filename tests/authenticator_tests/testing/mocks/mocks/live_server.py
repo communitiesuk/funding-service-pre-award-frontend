@@ -1,7 +1,7 @@
 import pytest
 
 from app import create_app
-from authenticator.testing.mocks.mocks.redis_sessions import RedisSessions
+from tests.authenticator_tests.testing.mocks.mocks.redis_sessions import RedisSessions
 
 
 @pytest.fixture(scope="session")

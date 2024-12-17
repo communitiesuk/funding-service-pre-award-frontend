@@ -40,8 +40,8 @@ class TestSignout:
         :param flask_test_client:
         """
         endpoint = "/sessions/sign-out"
-        flask_test_client.set_cookie("/", "fsd_user_token", "invalid_token")
-        flask_test_client.set_cookie("/", "user_fund_and_round", "fund_round")
+        flask_test_client.set_cookie("fsd_user_token", "invalid_token")
+        flask_test_client.set_cookie("user_fund_and_round", "fund_round")
 
         with patch("authenticator.api.session.auth_session.validate_token") as mock_validate_token:  # noqa
             mock_validate_token.return_value = {
@@ -53,8 +53,11 @@ class TestSignout:
             response = flask_test_client.post(endpoint)
 
             assert response.status_code == 302
-            assert "fsd_user_token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/" in response.headers.get(  # noqa
-                "Set-Cookie"
+            assert (
+                "fsd_user_token=; Domain=levellingup.gov.localhost; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/"
+                in response.headers.get(  # noqa
+                    "Set-Cookie"
+                )
             )
             assert (
                 response.location == "/service/magic-links/signed-out/sign_out_request?fund=test_fund&round=test_round"  # noqa
@@ -76,10 +79,7 @@ class TestSignout:
         use_endpoint = f"/magic-links/{link_key}"
         flask_test_client.get(use_endpoint)
         self.used_link_keys.append(link_key)
-        auth_cookie = next(
-            (cookie for cookie in flask_test_client.cookie_jar if cookie.name == expected_cookie_name),
-            None,
-        )
+        auth_cookie = flask_test_client.get_cookie(expected_cookie_name, "levellingup.gov.localhost")
 
         # Check auth token cookie is set and is valid
         assert (
@@ -93,7 +93,10 @@ class TestSignout:
         endpoint = "/sessions/sign-out"
         response = flask_test_client.post(endpoint)
         assert response.status_code == 302
-        assert "fsd_user_token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/" in response.headers.get("Set-Cookie")
+        assert (
+            "fsd_user_token=; Domain=levellingup.gov.localhost; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/"
+            in response.headers.get("Set-Cookie")
+        )
         assert response.location == "/service/magic-links/signed-out/sign_out_request"
 
     def test_user_page_for_logged_out_user(self, flask_test_client):
@@ -129,7 +132,7 @@ class TestSignout:
         }
 
         token = create_token(test_payload)
-        flask_test_client.set_cookie("localhost", "fsd_user_token", token)
+        flask_test_client.set_cookie(key="fsd_user_token", value=token)
 
         endpoint = "/service/user?roles_required=ultimate_assessor|mega_assessor"
         response = flask_test_client.get(endpoint)
@@ -163,7 +166,7 @@ class TestSignout:
         }
 
         token = create_token(test_payload)
-        flask_test_client.set_cookie("localhost", "fsd_user_token", token)
+        flask_test_client.set_cookie(key="fsd_user_token", value=token)
 
         endpoint = "/service/user?roles_required=cof_assessor|cof_commenter"
         response = flask_test_client.get(endpoint)
@@ -274,4 +277,4 @@ class TestSignout:
         response = flask_test_client.post(endpoint, data=data)
 
         assert response.status_code == 302
-        assert response.location == "/service/sso/signed-out/no_token?return_app=post-award-frontend&return_path=%2Ffoo"
+        assert response.location == "/service/sso/signed-out/no_token?return_app=post-award-frontend&return_path=/foo"

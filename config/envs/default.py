@@ -133,16 +133,22 @@ class DefaultConfig:
     DISABLE_NOTIFICATION_SERVICE = False
 
     # Post-award frontend
-    POST_AWARD_FRONTEND_HOST = environ.get("POST_AWARD_FRONTEND_HOST", "")
+    POST_AWARD_FRONTEND_HOST = environ.get(
+        "POST_AWARD_FRONTEND_HOST", "https://find-monitoring-data.levellingup.gov.localhost:4001"
+    )
 
     # Post-award submit
-    POST_AWARD_SUBMIT_HOST = environ.get("POST_AWARD_SUBMIT_HOST", "")
+    POST_AWARD_SUBMIT_HOST = environ.get(
+        "POST_AWARD_SUBMIT_HOST", "https://submit-monitoring-data.levellingup.gov.localhost:4001"
+    )
 
     # Form Designer
     FORM_DESIGNER_HOST = environ.get("FORM_DESIGNER_HOST", "")
 
     # Fund Application Builder
-    FUND_APPLICATION_BUILDER_HOST = environ.get("FUND_APPLICATION_BUILDER_HOST", "")
+    FUND_APPLICATION_BUILDER_HOST = environ.get(
+        "FUND_APPLICATION_BUILDER_HOST", "https://fund-application-builder.levellingup.gov.localhost:3011"
+    )
 
     # Safe list of return applications
     SAFE_RETURN_APPS = {
