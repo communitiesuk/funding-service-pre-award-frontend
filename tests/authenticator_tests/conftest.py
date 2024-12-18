@@ -59,7 +59,7 @@ class _AuthenticatorFlaskClient(FlaskClient):
         value: str = "",
         *,
         domain: str | None = None,
-        origin_only: bool = True,
+        origin_only: bool = False,
         path: str = "/",
         **kwargs: Any,
     ) -> None:
