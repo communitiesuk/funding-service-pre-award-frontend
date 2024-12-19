@@ -120,7 +120,8 @@ def get_ttl_hash(seconds=3600) -> int:
 
 def get_value_from_request(parameter_names) -> str | None:
     for parameter_name in parameter_names:
-        value = request.view_args.get(parameter_name) or request.args.get(parameter_name)
+        view_args = request.view_args or {}
+        value = view_args.get(parameter_name) or request.args.get(parameter_name)
         if value:
             return value
 

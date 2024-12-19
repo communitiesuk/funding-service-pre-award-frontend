@@ -2,6 +2,7 @@ from flask import current_app, redirect, render_template, request
 from fsd_utils.authentication.decorators import login_requested
 
 from assess.authentication.auth import auth_protect
+from config import Config
 
 
 def not_found(error):
@@ -20,12 +21,17 @@ def not_found(error):
             unprotected_routes=["/", "/healthcheck", "/cookie_policy"],
         ) or redirect("/")
 
-    if request.host == current_app.config["AUTHENTICATOR_HOST"]:
-        return render_template("authenticator/404.html", is_error=True), 404
+    if request.host == current_app.config["AUTH_HOST"]:
+        return render_template(
+            "authenticator/404.html",
+            is_error=True,
+            support_desk_apply=Config.SUPPORT_DESK_APPLY,
+        ), 404
 
     return render_template(
         "apply/404.html",
         is_error=True,
+        support_desk_apply=Config.SUPPORT_DESK_APPLY,
     ), 404
 
 

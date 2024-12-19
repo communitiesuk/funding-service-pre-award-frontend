@@ -36,7 +36,7 @@ def user():
                 status_code = 403
     return (
         render_template(
-            "user.html",
+            "authenticator/user/user.html",
             roles_required=roles_required,
             logged_in_user=logged_in_user,
             login_url=url_for("api_sso.login"),
