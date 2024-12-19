@@ -8,24 +8,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-12-09 11:52+0000\n"
+"POT-Creation-Date: 2024-12-17 10:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.14.0\n"
+"Generated-By: Babel 2.16.0\n"
 
-#: app.py:123 apply/default/application_routes.py:345
+#: app.py:267 apply/default/application_routes.py:346
 msgid "Apply for"
 msgstr ""
 
-#: app.py:125 apply/templates/apply/base.html:4
+#: app.py:275 apply/templates/apply/base.html:4
+#: authenticator/frontend/templates/base.html:5
 msgid "Access Funding"
 msgstr ""
 
 #: apply/filters.py:15 apply/filters.py:62 apply/filters.py:92
+#: authenticator/frontend/magic_links/filters.py:9
 msgid "at"
 msgstr ""
 
@@ -165,19 +167,23 @@ msgstr ""
 msgid "Ready to Submit"
 msgstr ""
 
-#: apply/templates/apply/500.html:3
+#: apply/templates/apply/500.html:3 authenticator/frontend/templates/500.html:3
+#: authenticator/frontend/templates/500.html:8
 msgid "Sorry, there is a problem with the service"
 msgstr ""
 
-#: apply/templates/apply/500.html:9
+#: apply/templates/apply/500.html:9 authenticator/frontend/templates/500.html:9
 msgid "Try again later."
 msgstr ""
 
 #: apply/templates/apply/500.html:12 apply/templates/apply/footer.html:23
+#: authenticator/frontend/templates/500.html:11
+#: authenticator/frontend/templates/footer.html:22
 msgid "Contact us"
 msgstr ""
 
 #: apply/templates/apply/500.html:12
+#: authenticator/frontend/templates/500.html:11
 msgid "if you have any questions."
 msgstr ""
 
@@ -290,6 +296,7 @@ msgstr ""
 
 #: apply/templates/apply/application_submitted.html:24
 #: apply/templates/apply/eoi_submitted.html:24
+#: authenticator/frontend/magic_links/templates/check_email.html:33
 msgid "What happens next"
 msgstr ""
 
@@ -322,14 +329,6 @@ msgid "Contact page"
 msgstr ""
 
 #: apply/templates/apply/contact_us.html:26
-msgid "Contact the"
-msgstr ""
-
-#: apply/templates/apply/contact_us.html:26
-msgid "if you have any questions"
-msgstr ""
-
-#: apply/templates/apply/contact_us.html:28
 msgid "Contact us if you have any questions"
 msgstr ""
 
@@ -421,8 +420,8 @@ msgstr ""
 #: apply/templates/apply/end_of_application_feedback_page_3.html:21
 #: apply/templates/apply/end_of_application_feedback_page_4.html:23
 #: apply/templates/apply/end_of_application_survey.html:20
-#: apply/templates/apply/tasklist.html:196
-#: apply/templates/apply/tasklist.html:205
+#: apply/templates/apply/tasklist.html:194
+#: apply/templates/apply/tasklist.html:203
 msgid "Applicant feedback survey"
 msgstr ""
 
@@ -485,6 +484,9 @@ msgstr ""
 
 #: apply/templates/apply/end_of_application_survey.html:27
 #: apply/templates/apply/section_feedback_intro.html:33
+#: authenticator/frontend/magic_links/templates/email.html:63
+#: authenticator/frontend/magic_links/templates/landing.html:25
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:22
 msgid "Continue"
 msgstr ""
 
@@ -581,14 +583,17 @@ msgid "feedback"
 msgstr ""
 
 #: apply/templates/apply/footer.html:10
+#: authenticator/frontend/templates/footer.html:9
 msgid "Privacy"
 msgstr ""
 
 #: apply/templates/apply/footer.html:15
+#: authenticator/frontend/templates/footer.html:14
 msgid "Cookies"
 msgstr ""
 
 #: apply/templates/apply/footer.html:19
+#: authenticator/frontend/templates/footer.html:18
 msgid "Accessibility Statement"
 msgstr ""
 
@@ -626,95 +631,122 @@ msgstr ""
 msgid "Start or continue an application for"
 msgstr ""
 
-#: apply/templates/apply/fund_start_page.html:45
+#: apply/templates/apply/fund_start_page.html:48
 msgid "Read the fund's prospectus"
 msgstr ""
 
-#: apply/templates/apply/fund_start_page.html:47
+#: apply/templates/apply/fund_start_page.html:50
 msgid "before you start."
 msgstr ""
 
-#: apply/templates/apply/fund_start_page.html:49
+#: apply/templates/apply/fund_start_page.html:52
 msgid "before you apply."
 msgstr ""
 
-#: apply/templates/apply/fund_start_page.html:54
-#: apply/templates/apply/tasklist.html:129
+#: apply/templates/apply/fund_start_page.html:58
+#: apply/templates/apply/tasklist.html:127
+#: authenticator/frontend/magic_links/templates/landing.html:20
 msgid "Submission deadline:"
 msgstr ""
 
-#: apply/templates/apply/fund_start_page.html:62
+#: apply/templates/apply/fund_start_page.html:66
 msgid "Enter your email address"
 msgstr ""
 
-#: apply/templates/apply/fund_start_page.html:66
+#: apply/templates/apply/fund_start_page.html:70
 #: apply/templates/apply/tasklist.html:93
+#: authenticator/frontend/magic_links/templates/landing.html:72
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:73
 msgid "Get help"
 msgstr ""
 
-#: apply/templates/apply/fund_start_page.html:69
+#: apply/templates/apply/fund_start_page.html:73
+#: authenticator/frontend/magic_links/templates/landing.html:76
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:77
 msgid "If you have questions about the form or the fund,"
 msgstr ""
 
-#: apply/templates/apply/fund_start_page.html:75
+#: apply/templates/apply/fund_start_page.html:79
 #: apply/templates/apply/tasklist.html:105
+#: authenticator/frontend/magic_links/templates/landing.html:77
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:78
 msgid "contact us."
 msgstr ""
 
-#: apply/templates/apply/fund_start_page.html:79
-msgid "If you need help, email us at"
+#: apply/templates/apply/fund_start_page.html:82
+msgid "If you need help, contact us through our "
 msgstr ""
 
-#: apply/templates/apply/fund_start_page.html:84
-#: apply/templates/apply/tasklist.html:112
+#: apply/templates/apply/fund_start_page.html:83
+#: apply/templates/apply/partials/contact_details.html:5
+#: apply/templates/apply/tasklist.html:107
+msgid "support desk"
+msgstr ""
+
+#: apply/templates/apply/fund_start_page.html:88
+#: apply/templates/apply/tasklist.html:110
 msgid ""
-"Do not send any applications or attachments by email. We'll only accept "
-"applications through this service."
+"Do not send any applications or attachments from the service desk portal."
+" We'll only accept applications through this service."
 msgstr ""
 
 #: apply/templates/apply/head.html:16
+#: authenticator/frontend/templates/head.html:16
 msgid "Cookies on Access Funding"
 msgstr ""
 
 #: apply/templates/apply/head.html:18
+#: authenticator/frontend/templates/head.html:18
 msgid "We use some essential cookies to make this service work."
 msgstr ""
 
 #: apply/templates/apply/head.html:19
+#: authenticator/frontend/templates/head.html:19
 msgid ""
 "We'd also like to use analytics cookies so we can understand how you use "
 "the service and make improvements."
 msgstr ""
 
 #: apply/templates/apply/head.html:25
+#: authenticator/frontend/templates/head.html:25
 msgid "Accept analytics cookies"
 msgstr ""
 
 #: apply/templates/apply/head.html:28
+#: authenticator/frontend/templates/head.html:28
 msgid "Reject analytics cookies"
 msgstr ""
 
 #: apply/templates/apply/head.html:30
+#: authenticator/frontend/templates/head.html:30
 msgid "View cookies"
 msgstr ""
 
 #: apply/templates/apply/head.html:37
+#: authenticator/frontend/templates/head.html:37
 msgid "You've accepted analytics cookies. You can"
 msgstr ""
 
 #: apply/templates/apply/head.html:38 apply/templates/apply/head.html:53
+#: authenticator/frontend/templates/head.html:38
+#: authenticator/frontend/templates/head.html:53
 msgid "change your cookie settings"
 msgstr ""
 
 #: apply/templates/apply/head.html:38 apply/templates/apply/head.html:53
+#: authenticator/frontend/templates/head.html:38
+#: authenticator/frontend/templates/head.html:53
 msgid "at any time."
 msgstr ""
 
 #: apply/templates/apply/head.html:44 apply/templates/apply/head.html:59
+#: authenticator/frontend/templates/head.html:44
+#: authenticator/frontend/templates/head.html:59
 msgid "Hide cookie message"
 msgstr ""
 
 #: apply/templates/apply/head.html:52
+#: authenticator/frontend/templates/head.html:52
 msgid "You've rejected analytics cookies. You can"
 msgstr ""
 
@@ -727,10 +759,12 @@ msgid "Sign out"
 msgstr ""
 
 #: apply/templates/apply/header.html:55
+#: authenticator/frontend/templates/header.html:34
 msgid "beta"
 msgstr ""
 
 #: apply/templates/apply/header.html:57
+#: authenticator/frontend/templates/header.html:36
 msgid "This is a new service."
 msgstr ""
 
@@ -750,6 +784,7 @@ msgid "Full name"
 msgstr ""
 
 #: apply/templates/apply/research_contact_details.html:45
+#: authenticator/frontend/magic_links/templates/email.html:9
 msgid "Email address"
 msgstr ""
 
@@ -818,18 +853,22 @@ msgid "Help with filling out your application"
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:46
+#: authenticator/frontend/magic_links/templates/landing.html:36
 msgid "Moving through the form"
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:49
+#: authenticator/frontend/magic_links/templates/landing.html:39
 msgid "This form is split into sections based on how it will be assessed."
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:52
+#: authenticator/frontend/magic_links/templates/landing.html:42
 msgid "You do not have to complete it in order, or all at once."
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:55
+#: authenticator/frontend/magic_links/templates/landing.html:45
 msgid ""
 "When you have written something in every field in a section, the section "
 "will be marked as complete. You can still change your responses in "
@@ -837,10 +876,12 @@ msgid ""
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:59
+#: authenticator/frontend/magic_links/templates/landing.html:49
 msgid "Saving progress and making changes"
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:62
+#: authenticator/frontend/magic_links/templates/landing.html:52
 msgid ""
 "Your work will not save automatically. To make sure you do not lose "
 "anything, select Save and continue regularly, and always before you go "
@@ -848,14 +889,17 @@ msgid ""
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:66
+#: authenticator/frontend/magic_links/templates/landing.html:55
 msgid "If you need to edit or revisit any sections, use the browser back button."
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:69
+#: authenticator/frontend/magic_links/templates/landing.html:58
 msgid "You can edit your responses as many times as you like before you submit."
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:73
+#: authenticator/frontend/magic_links/templates/landing.html:62
 msgid "Submitting your application"
 msgstr ""
 
@@ -872,12 +916,14 @@ msgid ""
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:84
+#: authenticator/frontend/magic_links/templates/landing.html:65
 msgid ""
 "When you have completed all sections, you'll be able to submit your "
 "application."
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:88
+#: authenticator/frontend/magic_links/templates/landing.html:68
 msgid ""
 "Once you have submitted your application, you'll not be able to edit, add"
 " or change any sections."
@@ -888,92 +934,97 @@ msgid "If you have any questions about the form or the fund, "
 msgstr ""
 
 #: apply/templates/apply/tasklist.html:107
-msgid "If you have any questions about the form or the fund, email us at"
+msgid ""
+"If you have any questions about the form or the fund, contact us through "
+"our "
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:115
+#: apply/templates/apply/tasklist.html:113
+#: authenticator/frontend/magic_links/templates/landing.html:86
 msgid "How we'll use your information"
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:118
+#: apply/templates/apply/tasklist.html:116
+#: authenticator/frontend/magic_links/templates/landing.html:89
 msgid "Read how we'll use the information from your application in our"
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:119
+#: apply/templates/apply/tasklist.html:117
+#: authenticator/frontend/magic_links/templates/landing.html:89
 msgid "privacy notice"
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:133
+#: apply/templates/apply/tasklist.html:131
 msgid "Reference:"
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:141
+#: apply/templates/apply/tasklist.html:139
 msgid "Status:"
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:161
+#: apply/templates/apply/tasklist.html:159
 msgid "None of the sections have been completed."
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:163
+#: apply/templates/apply/tasklist.html:161
 msgid "You have completed"
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:164
+#: apply/templates/apply/tasklist.html:162
 msgid "of"
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:165
+#: apply/templates/apply/tasklist.html:163
 msgid "sections."
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:180
+#: apply/templates/apply/tasklist.html:178
 msgid "Applicant feedback survey (not scored)"
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:185
+#: apply/templates/apply/tasklist.html:183
 msgid ""
 "You must complete all other sections before starting the feedback survey."
 " This section is optional and should take approximately 1 minute to "
 "complete."
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:189
+#: apply/templates/apply/tasklist.html:187
 msgid ""
 "You must complete all other sections before starting the feedback survey."
 " This section should take approximately 1 minute to complete."
 msgstr ""
 
 #: apply/templates/apply/partials/tasklist_section.html:47
-#: apply/templates/apply/tasklist.html:199
-#: apply/templates/apply/tasklist.html:257
+#: apply/templates/apply/tasklist.html:197
+#: apply/templates/apply/tasklist.html:255
 msgid "Cannot start yet"
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:225
+#: apply/templates/apply/tasklist.html:223
 msgid "Applicant feedback submitted"
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:238
+#: apply/templates/apply/tasklist.html:236
 msgid "Applicant research survey (not scored)"
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:243
+#: apply/templates/apply/tasklist.html:241
 msgid ""
 "You must complete all other sections before starting the research survey."
 " This section is optional and should take approximately 1 minute to "
 "complete."
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:247
+#: apply/templates/apply/tasklist.html:245
 msgid ""
 "You must complete all other sections before starting the research survey."
 " This section should take approximately 1 minute to complete."
 msgstr ""
 
-#: apply/templates/apply/tasklist.html:254
-#: apply/templates/apply/tasklist.html:263
-#: apply/templates/apply/tasklist.html:284
+#: apply/templates/apply/tasklist.html:252
+#: apply/templates/apply/tasklist.html:261
+#: apply/templates/apply/tasklist.html:282
 msgid "Applicant research survey"
 msgstr ""
 
@@ -993,7 +1044,9 @@ msgstr ""
 #: apply/templates/apply/all_questions/en/cyp_r1_all_questions_en.html:7
 #: apply/templates/apply/all_questions/en/dpif_r2_all_questions_en.html:7
 #: apply/templates/apply/all_questions/en/dpif_r3_all_questions_en.html:7
+#: apply/templates/apply/all_questions/en/gbrf_r1_all_questions_en.html:6
 #: apply/templates/apply/all_questions/en/hsra_r1_all_questions_en.html:7
+#: apply/templates/apply/all_questions/en/lpdf_r1_all_questions_en.html:6
 #: apply/templates/apply/all_questions/uses_translations/cof_r2_all_questions.html:6
 #: apply/templates/apply/all_questions/uses_translations/cof_r3_all_questions.html:6
 msgid "Full list of application questions"
@@ -1015,7 +1068,9 @@ msgstr ""
 #: apply/templates/apply/all_questions/en/cyp_r1_all_questions_en.html:11
 #: apply/templates/apply/all_questions/en/dpif_r2_all_questions_en.html:11
 #: apply/templates/apply/all_questions/en/dpif_r3_all_questions_en.html:11
+#: apply/templates/apply/all_questions/en/gbrf_r1_all_questions_en.html:10
 #: apply/templates/apply/all_questions/en/hsra_r1_all_questions_en.html:11
+#: apply/templates/apply/all_questions/en/lpdf_r1_all_questions_en.html:10
 #: apply/templates/apply/all_questions/uses_translations/cof_r2_all_questions.html:10
 #: apply/templates/apply/all_questions/uses_translations/cof_r3_all_questions.html:10
 #, python-format
@@ -1038,7 +1093,9 @@ msgstr ""
 #: apply/templates/apply/all_questions/en/cyp_r1_all_questions_en.html:11
 #: apply/templates/apply/all_questions/en/dpif_r2_all_questions_en.html:11
 #: apply/templates/apply/all_questions/en/dpif_r3_all_questions_en.html:12
+#: apply/templates/apply/all_questions/en/gbrf_r1_all_questions_en.html:10
 #: apply/templates/apply/all_questions/en/hsra_r1_all_questions_en.html:11
+#: apply/templates/apply/all_questions/en/lpdf_r1_all_questions_en.html:10
 #, python-format
 msgid "%(round_title)s"
 msgstr ""
@@ -1056,7 +1113,9 @@ msgstr ""
 #: apply/templates/apply/all_questions/en/cof_r4w2_all_questions_en.html:16
 #: apply/templates/apply/all_questions/en/cyp_r1_all_questions_en.html:16
 #: apply/templates/apply/all_questions/en/dpif_r2_all_questions_en.html:16
+#: apply/templates/apply/all_questions/en/gbrf_r1_all_questions_en.html:15
 #: apply/templates/apply/all_questions/en/hsra_r1_all_questions_en.html:16
+#: apply/templates/apply/all_questions/en/lpdf_r1_all_questions_en.html:15
 #: apply/templates/apply/all_questions/uses_translations/cof_r2_all_questions.html:13
 #: apply/templates/apply/all_questions/uses_translations/cof_r3_all_questions.html:13
 msgid "Table of contents"
@@ -3777,20 +3836,25 @@ msgid "You cannot change the language of an existing application."
 msgstr ""
 
 #: apply/templates/apply/partials/contact_details.html:4
-msgid "Email"
+msgid "Please contact us through our "
 msgstr ""
 
-#: apply/templates/apply/partials/contact_details.html:12
-#: apply/templates/apply/partials/contact_details.html:24
-#: apply/templates/apply/partials/contact_details.html:34
+#: apply/templates/apply/partials/contact_details.html:9
+#: apply/templates/apply/partials/contact_details.html:21
+#: apply/templates/apply/partials/contact_details.html:31
+#: authenticator/frontend/templates/partials/contact_details.html:11
+#: authenticator/frontend/templates/partials/contact_details.html:27
+#: authenticator/frontend/templates/partials/contact_details.html:37
 msgid "except public holidays"
 msgstr ""
 
-#: apply/templates/apply/partials/contact_details.html:18
+#: apply/templates/apply/partials/contact_details.html:15
+#: authenticator/frontend/templates/partials/contact_details.html:21
 msgid "Telephone"
 msgstr ""
 
-#: apply/templates/apply/partials/contact_details.html:29
+#: apply/templates/apply/partials/contact_details.html:26
+#: authenticator/frontend/templates/partials/contact_details.html:32
 msgid "Textphone"
 msgstr ""
 
@@ -3799,10 +3863,12 @@ msgid "Check eligibility"
 msgstr ""
 
 #: apply/templates/apply/partials/feedback_error_summary.html:5
+#: authenticator/frontend/magic_links/templates/email.html:21
 msgid "There is a problem"
 msgstr ""
 
 #: apply/templates/apply/partials/round_closed_warning.html:6
+#: authenticator/frontend/magic_links/templates/email.html:29
 msgid "Important"
 msgstr ""
 
@@ -3871,4 +3937,218 @@ msgstr ""
 
 #: apply/templates/apply/partials/tasklist_submit.html:12
 msgid "Submit your application"
+msgstr ""
+
+#: authenticator/frontend/magic_links/forms.py:23
+msgid "Session expired, please refresh page to continue."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/check_email.html:9
+msgid "Email sent"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/check_email.html:11
+msgid "Email not sent"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/check_email.html:26
+msgid "No email has been sent."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/check_email.html:27
+msgid "If you need a link to access your applications you can "
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/check_email.html:27
+#: authenticator/frontend/magic_links/templates/check_email.html:47
+msgid "request a new link"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/check_email.html:32
+msgid "We have sent an email to "
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/check_email.html:35
+msgid ""
+"Use the link to confirm your email address and start a new application, "
+"or continue any applications you have in progress."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/check_email.html:37
+msgid "The link will work once and stop working after 24 hours."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/check_email.html:42
+msgid "If you do not receive an email"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/check_email.html:46
+msgid "The email may take a few minutes to arrive."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/check_email.html:47
+msgid "Check your spam or junk folders – if it still has not arrived, you can "
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/email.html:28
+msgid ""
+"You must use the same email address when you submit a full application to"
+" Community Ownership Fund"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/email.html:44
+msgid ""
+"<p>We'll email you a link to start a new application, or continue any "
+"applications you have in progress.</p>\n"
+"<p>The link will work once and stop working after 24 hours.</p>\n"
+"<p>If you want to return to an application, you must use the email you "
+"started the application with.</p>"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/email.html:47
+msgid "<p>Use the email address you would like your outcome email sent to.</p>"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/invalid.html:4
+msgid "Link expired"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/invalid.html:11
+msgid " Magic link expired "
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/invalid.html:16
+msgid " You can request a new magic link to access your application. "
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/invalid.html:24
+#: authenticator/frontend/magic_links/templates/signed_out.html:35
+msgid "Request a new link"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing.html:31
+msgid "How to complete your application"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing.html:79
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:80
+msgid "If you have any questions about the form or the fund, email us at"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing.html:83
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:84
+msgid ""
+"Do not send any applications or attachments by email. We'll only accept "
+"applications through this service."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:17
+msgid "Express an interest in applying for the "
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:29
+msgid ""
+"You must complete this Expression of Interest (EOI) form if you are "
+"interested in applying for the Community Ownership Fund."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:30
+msgid "Read the fund's prospectus before you start"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:34
+msgid "What this process involves"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:38
+msgid ""
+"We will ask for some basic information about your organisation and your "
+"project. This should take approximately 15 minutes to complete."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:42
+msgid ""
+"You will receive instant results showing whether your project may be "
+"suitable for COF funding. You will also receive an email with guidance on"
+" any additional requirements you must meet before applying."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:46
+msgid ""
+"Meeting the requirements at EOI stage does not guarantee you are eligible"
+" for funding. Your full application to COF will be subject to further "
+"gateway, eligibility, and due diligence checks, as set out in our"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:47
+msgid "explanatory note on decision making"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:51
+msgid "How we'll use your data"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:55
+msgid ""
+"Some of the answers you submit will be assessed automatically to show "
+"whether you are suitable for COF."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:59
+msgid ""
+"We also store this data so we can refer to it if you complete a COF "
+"application."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:63
+msgid ""
+"By completing this form, you also consent to share your data with our "
+"development support provider, who may direct you to relevant information "
+"and support. They will also use your answers to determine whether you may"
+" be eligible for in-depth support with your COF application."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/landing_eoi.html:68
+msgid "Read our privacy notice for more information."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/signed_out.html:4
+msgid "You are not logged in"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/signed_out.html:6
+msgid "You have been signed out"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/signed_out.html:20
+msgid "Your session has "
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/signed_out.html:22
+msgid "expired"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/signed_out.html:24
+msgid "been closed"
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/signed_out.html:30
+msgid "To re-access your account, please click below to request a new link."
+msgstr ""
+
+#: authenticator/frontend/magic_links/templates/signed_out.html:38
+msgid ""
+"To re-access your account, please use the link originally provided in the"
+" email sent you."
+msgstr ""
+
+#: authenticator/frontend/templates/partials/contact_details.html:3
+msgid "Email"
+msgstr ""
+
+#: authenticator/frontend/templates/partials/contact_details.html:16
+msgid ""
+"Do not send any applications or attachments by email. We'll only accept "
+"applications\n"
+"            through this service."
 msgstr ""

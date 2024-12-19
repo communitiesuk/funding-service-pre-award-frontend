@@ -1,6 +1,7 @@
-from flask import Blueprint, g, render_template, request, url_for
+from flask import g, render_template, request, url_for
 from fsd_utils.authentication.decorators import login_requested
 
+from common.blueprints import Blueprint
 from config import Config
 
 user_bp = Blueprint(
@@ -35,7 +36,7 @@ def user():
                 status_code = 403
     return (
         render_template(
-            "user.html",
+            "authenticator/user/user.html",
             roles_required=roles_required,
             logged_in_user=logged_in_user,
             login_url=url_for("api_sso.login"),

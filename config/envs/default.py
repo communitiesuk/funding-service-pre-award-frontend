@@ -2,11 +2,17 @@
 
 import base64
 import os
+from collections import namedtuple
 from distutils.util import strtobool
 from os import environ, getenv
 from pathlib import Path
+from urllib.parse import urljoin
 
+import redis
 from fsd_utils import CommonConfig, configclass
+from fsd_utils.authentication.config import SupportedApp
+
+SafeAppConfig = namedtuple("SafeAppConfig", ("login_url", "logout_endpoint", "service_title"))
 
 
 @configclass
@@ -15,7 +21,6 @@ class DefaultConfig:
     FLASK_ENV = environ.get("FLASK_ENV", "development")
     SECRET_KEY = CommonConfig.SECRET_KEY
     SESSION_COOKIE_NAME = environ.get("SESSION_COOKIE_NAME", "session_cookie")
-    SESSION_COOKIE_SECURE = True
     WTF_CSRF_TIME_LIMIT = CommonConfig.WTF_CSRF_TIME_LIMIT
     MAINTENANCE_MODE = strtobool(getenv("MAINTENANCE_MODE", "False"))
     MAINTENANCE_END_TIME = getenv("MAINTENANCE_END_TIME", "soon")
@@ -25,6 +30,10 @@ class DefaultConfig:
 
     APPLY_HOST = getenv("APPLY_HOST", "frontend.levellingup.gov.localhost:3008")
     ASSESS_HOST = getenv("ASSESS_HOST", "assessment.levellingup.gov.localhost:3010")
+    AUTH_HOST = getenv("AUTH_HOST", "authenticator.levellingup.gov.localhost:4004")
+
+    SUPPORT_DESK_APPLY = "https://mhclgdigital.atlassian.net/servicedesk/customer/portal/5/group/68"
+    SUPPORT_DESK_ASSESS = "https://mhclgdigital.atlassian.net/servicedesk/customer/portal/5/group/70"
 
     # assess STATIC_URL_PATH = "app/static"
     STATIC_FOLDER = "static"
@@ -34,6 +43,7 @@ class DefaultConfig:
 
     # Funding Service Design
     FSD_USER_TOKEN_COOKIE_NAME = "fsd_user_token"
+    FSD_FUND_AND_ROUND_COOKIE_NAME = "user_fund_and_round"
     AUTHENTICATOR_HOST = environ.get("AUTHENTICATOR_HOST", "https://authenticator.levellingup.gov.localhost:4004")
     ENTER_APPLICATION_URL = AUTHENTICATOR_HOST + "/service/magic-links/new"
     MAGIC_LINK_URL = (
@@ -41,8 +51,27 @@ class DefaultConfig:
     )
     SESSION_COOKIE_DOMAIN = environ.get("SESSION_COOKIE_DOMAIN")
     COOKIE_DOMAIN = environ.get("COOKIE_DOMAIN", None)
+    FSD_SESSION_TIMEOUT_SECONDS = CommonConfig.FSD_SESSION_TIMEOUT_SECONDS
+    CREATE_APPLICATION_ON_ACCOUNT_CREATION = False
+    ALLOW_ASSESSMENT_LOGIN_VIA_MAGIC_LINK = strtobool(getenv("ALLOW_ASSESSMENT_LOGIN_VIA_MAGIC_LINK", "True"))
+
+    # Session
+    SESSION_TYPE = (
+        # Specifies how the token cache should be stored
+        # in server-side session
+        # "filesystem"
+        "redis"
+    )
+    SESSION_PERMANENT = False
+    SESSION_USE_SIGNER = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
 
     # RSA 256 KEYS
+    RSA256_PRIVATE_KEY_BASE64 = environ.get("RSA256_PRIVATE_KEY_BASE64")
+    if RSA256_PRIVATE_KEY_BASE64:
+        RSA256_PRIVATE_KEY = base64.b64decode(RSA256_PRIVATE_KEY_BASE64).decode()
     RSA256_PUBLIC_KEY_BASE64 = environ.get("RSA256_PUBLIC_KEY_BASE64")
     if RSA256_PUBLIC_KEY_BASE64:
         RSA256_PUBLIC_KEY = base64.b64decode(RSA256_PUBLIC_KEY_BASE64).decode()
@@ -92,6 +121,65 @@ class DefaultConfig:
 
     FORM_REHYDRATION_URL = (FORMS_SERVICE_PRIVATE_HOST or FORMS_SERVICE_PUBLIC_HOST) + "/session/{rehydration_token}"
 
+    # Applicant Frontend
+    APPLICANT_FRONTEND_HOST = environ.get("APPLICANT_FRONTEND_HOST", "frontend")
+
+    # Assessment Frontend
+    ASSESSMENT_FRONTEND_HOST = environ.get("ASSESSMENT_FRONTEND_HOST", "")
+    FSD_ASSESSMENT_SESSION_TIMEOUT_SECONDS = CommonConfig.FSD_SESSION_TIMEOUT_SECONDS
+    FUND_STORE_FUND_ENDPOINT = CommonConfig.FUND_ENDPOINT
+
+    # Notification Service
+    DISABLE_NOTIFICATION_SERVICE = False
+
+    # Post-award frontend
+    POST_AWARD_FRONTEND_HOST = environ.get(
+        "POST_AWARD_FRONTEND_HOST", "https://find-monitoring-data.levellingup.gov.localhost:4001"
+    )
+
+    # Post-award submit
+    POST_AWARD_SUBMIT_HOST = environ.get(
+        "POST_AWARD_SUBMIT_HOST", "https://submit-monitoring-data.levellingup.gov.localhost:4001"
+    )
+
+    # Form Designer
+    FORM_DESIGNER_HOST = environ.get("FORM_DESIGNER_HOST", "")
+
+    # Fund Application Builder
+    FUND_APPLICATION_BUILDER_HOST = environ.get(
+        "FUND_APPLICATION_BUILDER_HOST", "https://fund-application-builder.levellingup.gov.localhost:3011"
+    )
+
+    # Safe list of return applications
+    SAFE_RETURN_APPS = {
+        SupportedApp.POST_AWARD_FRONTEND.value: SafeAppConfig(
+            login_url=urljoin(POST_AWARD_FRONTEND_HOST, "/"),
+            logout_endpoint="sso_bp.signed_out",
+            service_title="Find monitoring and evaluation data",
+        ),
+        SupportedApp.POST_AWARD_SUBMIT.value: SafeAppConfig(
+            login_url=urljoin(POST_AWARD_SUBMIT_HOST, "/"),
+            logout_endpoint="sso_bp.signed_out",
+            service_title="Submit monitoring and evaluation data",
+        ),
+        SupportedApp.FORM_DESIGNER.value: SafeAppConfig(
+            login_url=urljoin(FORM_DESIGNER_HOST, "/"),
+            logout_endpoint="sso_bp.signed_out",
+            service_title="Form Designer",
+        ),
+        SupportedApp.FUND_APPLICATION_BUILDER.value: SafeAppConfig(
+            login_url=urljoin(FUND_APPLICATION_BUILDER_HOST, "/"),
+            logout_endpoint="sso_bp.signed_out",
+            service_title="Fund Application Builder",
+        ),
+    }
+
+    # Magic Links
+    MAGIC_LINK_EXPIRY_SECONDS = 60 * 60  # last for an hour
+    MAGIC_LINK_RECORD_PREFIX = "link"
+    MAGIC_LINK_USER_PREFIX = "account"
+    MAGIC_LINK_LANDING_PAGE = "/service/magic-links/landing/"
+
     # Content Security Policy
     SECURE_CSP = {
         "default-src": "'self'",
@@ -102,10 +190,9 @@ class DefaultConfig:
             "'sha256-z+p4q2n8BOpGMK2/OMOXrTYmjbeEhWQQHC3SF/uMOyg='",
             "'sha256-RgdCrr7A9yqYVstE6QiM/9RNRj4bYipcUa2C2ywQT1A='",
             "'sha256-W6+G9WX7ZWCn2Tdi1uHvgAuT45Y2OUJa9kqVxgAM+vM='",
-            "'sha256-RgdCrr7A9yqYVstE6QiM/9RNRj4bYipcUa2C2ywQT1A='",
             "'sha256-z+p4q2n8BOpGMK2/OMOXrTYmjbeEhWQQHC3SF/uMOyg='",
-            "'sha256-l1eTVSK8DTnK8+yloud7wZUqFrI0atVo6VlC6PJvYaQ='",
             "'sha256-GUQ5ad8JK5KmEWmROf3LZd9ge94daqNvd8xy9YS1iDw='",
+            "'sha256-qJr6rnZIepboaF/c9sFdugAE+I8xpVXVPeO/lk7/Yj0='",
             "https://tagmanager.google.com",
             "https://www.googletagmanager.com",
             "https://*.google-analytics.com",
@@ -119,6 +206,7 @@ class DefaultConfig:
 
     # Talisman Config
     FSD_REFERRER_POLICY = "strict-origin-when-cross-origin"
+    FSD_USER_TOKEN_COOKIE_SAMESITE = "Lax"
     FSD_SESSION_COOKIE_SAMESITE = "Strict"
     FSD_PERMISSIONS_POLICY = {"interest-cohort": "()"}
     FSD_DOCUMENT_POLICY = {}
@@ -154,6 +242,7 @@ class DefaultConfig:
         "referrer_policy": FSD_REFERRER_POLICY,
         "session_cookie_secure": True,
         "session_cookie_http_only": True,
+        # TODO: Authenticator used a session cookie with Lax rather than Strict as it is set here. Might break?
         "session_cookie_samesite": FSD_SESSION_COOKIE_SAMESITE,
         "x_content_type_options": True,
         "x_xss_protection": True,
@@ -164,13 +253,20 @@ class DefaultConfig:
 
     # Redis Feature Toggle Configuration
     REDIS_INSTANCE_URI = getenv("REDIS_INSTANCE_URI", "redis://localhost:6379")
+    # TODO: Consolidate these values
+    REDIS_MLINKS_URL = REDIS_INSTANCE_URI + "/0"
     TOGGLES_URL = REDIS_INSTANCE_URI + "/0"
+    REDIS_SESSIONS_URL = REDIS_INSTANCE_URI + "/1"
+    SESSION_REDIS = redis.from_url(REDIS_SESSIONS_URL)
     FEATURE_CONFIG = {"TAGGING": True, "ASSESSMENT_ASSIGNMENT": False, **CommonConfig.dev_feature_configuration}
 
     # LRU cache settings
     LRU_CACHE_TIME = int(environ.get("LRU_CACHE_TIME", 3600))  # in seconds
 
     MIGRATION_BANNER_ENABLED = getenv("MIGRATION_BANNER_ENABLED", False)
+
+    # Connexion
+    CONNEXION_OPTIONS = {}
 
     # Assess config
     TEXT_AREA_INPUT_MAX_CHARACTERS = 10000
@@ -186,7 +282,6 @@ class DefaultConfig:
 
     FUNDS_ENDPOINT = CommonConfig.FUNDS_ENDPOINT
     FUND_ENDPOINT = CommonConfig.FUND_ENDPOINT + "?use_short_name={use_short_name}"
-    GET_ROUND_DATA_FOR_FUND_ENDPOINT = FUND_STORE_API_HOST + "/funds/{fund_id}/rounds/{round_id}"
     # TODO: Rework on the avialable teams allocated after implemented in fundstore
     GET_AVIALABLE_TEAMS_FOR_FUND = FUND_STORE_API_HOST + "/funds/{fund_id}/rounds/{round_id}/available_flag_allocations"
 
@@ -313,7 +408,50 @@ class DefaultConfig:
     DEFAULT_FUND_ID = COF_FUND_ID
     DEFAULT_ROUND_ID = COF_ROUND_2_W3_ID
 
+    # TODO: Consolidate this AWS config below
     if "COPILOT_AWS_BUCKET_NAME" in os.environ:
         AWS_BUCKET_NAME = environ.get("COPILOT_AWS_BUCKET_NAME")
         AWS_REGION = environ.get("AWS_REGION")
         ASSETS_AUTO_BUILD = False
+
+    # ---------------
+    # AWS Overall Config
+    # ---------------
+    AWS_ACCESS_KEY_ID = AWS_SQS_ACCESS_KEY_ID = environ.get("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = AWS_SQS_SECRET_ACCESS_KEY = environ.get("AWS_SECRET_ACCESS_KEY")
+    AWS_REGION = AWS_SQS_REGION = environ.get("AWS_REGION", "eu-west-2")
+    AWS_ENDPOINT_OVERRIDE = environ.get("AWS_ENDPOINT_OVERRIDE")
+    AWS_MSG_BUCKET_NAME = environ.get("AWS_MSG_BUCKET_NAME")
+
+    # ---------------
+    # SQS Config
+    # ---------------
+    AWS_SQS_NOTIF_APP_PRIMARY_QUEUE_URL = environ.get("AWS_SQS_NOTIF_APP_PRIMARY_QUEUE_URL")
+    AWS_SQS_NOTIF_APP_SECONDARY_QUEUE_URL = environ.get("AWS_SQS_NOTIF_APP_SECONDARY_QUEUE_URL")
+
+    # Authenticator config
+    NEW_LINK_ENDPOINT = "/service/magic-links/new"
+    SSO_POST_SIGN_OUT_URL = AUTHENTICATOR_HOST + "/service/sso/signed-out/signout-request"
+    AUTO_REDIRECT_LOGIN = False
+
+    # TODO: Fix this babel directory
+    # BABEL_TRANSLATION_DIRECTORIES = "frontend/translations"
+
+    # Azure Active Directory Config
+    AZURE_AD_CLIENT_ID = (
+        # Application (client) ID of app registration on Azure AD
+        environ.get("AZURE_AD_CLIENT_ID")
+    )
+    AZURE_AD_CLIENT_SECRET = environ.get("AZURE_AD_CLIENT_SECRET")
+    AZURE_AD_TENANT_ID = environ.get("AZURE_AD_TENANT_ID", "")
+    AZURE_AD_AUTHORITY = (
+        # consumers|organizations|<tenant_id> - signifies the Azure AD tenant endpoint # noqa
+        "https://login.microsoftonline.com/" + AZURE_AD_TENANT_ID
+    )
+    # The absolute URL must match the redirect URI you set
+    # in the app's registration in the Azure portal.
+    AZURE_AD_REDIRECT_URI = urljoin(AUTHENTICATOR_HOST, "/sso/get-token")
+
+    # You can find the proper permission names from this document
+    # https://docs.microsoft.com/en-us/graph/permissions-reference
+    MS_GRAPH_PERMISSIONS_SCOPE = ["User.ReadBasic.All"]

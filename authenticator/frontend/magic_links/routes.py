@@ -1,14 +1,15 @@
 import uuid
 
-from flask import Blueprint, abort, current_app, g, redirect, render_template, request, url_for
-from frontend.magic_links.forms import EmailForm
+from flask import abort, current_app, g, redirect, render_template, request, url_for
 from fsd_utils.authentication.decorators import login_requested
-from models.account import AccountError, AccountMethods
-from models.data import get_round_data
-from models.fund import FundMethods
-from models.magic_link import MagicLinkError, MagicLinkMethods
-from models.notification import NotificationError
 
+from authenticator.frontend.magic_links.forms import EmailForm
+from authenticator.models.account import AccountError, AccountMethods
+from authenticator.models.data import get_round_data
+from authenticator.models.fund import FundMethods
+from authenticator.models.magic_link import MagicLinkError, MagicLinkMethods
+from authenticator.models.notification import NotificationError
+from common.blueprints import Blueprint
 from config import Config
 
 magic_links_bp = Blueprint(
@@ -23,7 +24,7 @@ magic_links_bp = Blueprint(
 def invalid():
     return (
         render_template(
-            "invalid.html",
+            "authenticator/magic_links/invalid.html",
             fund=request.args.get("fund"),
             round=request.args.get("round"),
         ),
@@ -35,7 +36,7 @@ def invalid():
 def signed_out(status):
     return (
         render_template(
-            "signed_out.html",
+            "authenticator/magic_links/signed_out.html",
             status=status,
             new_magic_link_url=url_for("magic_links_bp.new"),
             fund=request.args.get("fund"),
@@ -81,7 +82,9 @@ def landing(link_id):
             )
         round_prospectus = round_data.prospectus if round_data.prospectus else None
         return render_template(
-            "landing_eoi.html" if round_data.is_expression_of_interest else "landing.html",
+            "authenticator/magic_links/landing_eoi.html"
+            if round_data.is_expression_of_interest
+            else "authenticator/magic_links/landing.html",
             link_id=link_id,
             submission_deadline=submission_deadline,
             fund_name=fund_name,
@@ -167,7 +170,7 @@ def new():
             form.email.errors.append(str(e.message))
 
     return render_template(
-        "email.html",
+        "authenticator/magic_links/email.html",
         form=form,
         fund_round=fund_round,
         fund_short_name=fund_short_name,
@@ -184,7 +187,7 @@ def check_email():
     """
 
     return render_template(
-        "check_email.html",
+        "authenticator/magic_links/check_email.html",
         email=request.args.get("email"),
         fund=request.args.get("fund"),
         round=request.args.get("round"),

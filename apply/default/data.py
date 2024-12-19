@@ -119,7 +119,7 @@ def get_remote_data_force_return(endpoint):
 
 
 def get_local_data(endpoint: str):
-    api_data_json = os.path.join(Config.FLASK_ROOT, "tests", "api_data", "endpoint_data.json")
+    api_data_json = os.path.join(Config.FLASK_ROOT, "tests", "apply_tests", "api_data", "endpoint_data.json")
     with open(api_data_json) as json_file:
         api_data = json.load(json_file)
     if endpoint in api_data:

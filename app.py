@@ -1,20 +1,23 @@
 from os import getenv
+from urllib.parse import urlencode, urljoin
 
 from flask import Flask, current_app, g, make_response, render_template, request, url_for
 from flask_assets import Environment
 from flask_babel import Babel, gettext, pgettext
 from flask_compress import Compress
+from flask_redis import FlaskRedis
+from flask_session import Session
 from flask_talisman import Talisman
 from flask_wtf.csrf import CSRFProtect
 from fsd_utils import init_sentry
-from fsd_utils.healthchecks.checkers import FlaskRunningChecker
+from fsd_utils.healthchecks.checkers import FlaskRunningChecker, RedisChecker
 from fsd_utils.healthchecks.healthcheck import Healthcheck
-from fsd_utils.locale_selector.get_lang import get_lang
 from fsd_utils.logging import logging
+from fsd_utils.services.aws_extended_client import SQSExtendedClient
 from fsd_utils.toggles.toggles import create_toggles_client, initialise_toggles_redis_store, load_toggles
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 
-import assess_static_assets
+import static_assets
 from apply.filters import (
     custom_format_datetime,
     date_format_short_month,
@@ -40,8 +43,11 @@ from assess.shared.filters import (
     slash_separated_day_month_year,
     utc_to_bst,
 )
+from common.locale_selector.get_lang import get_lang
 from common.locale_selector.set_lang import LanguageSelector
 from config import Config
+
+redis_mlinks = FlaskRedis(config_prefix="REDIS_MLINKS")
 
 
 def create_app() -> Flask:  # noqa: C901
@@ -70,7 +76,7 @@ def create_app() -> Flask:  # noqa: C901
     # Bundle and compile assets
     assets = Environment()
     assets.init_app(flask_app)
-    assess_static_assets.init_assets(flask_app, auto_build=Config.ASSETS_AUTO_BUILD)
+    static_assets.init_assets(flask_app, auto_build=Config.ASSETS_AUTO_BUILD)
 
     flask_app.jinja_loader = ChoiceLoader(
         [
@@ -82,6 +88,7 @@ def create_app() -> Flask:  # noqa: C901
             PackageLoader("assess.flagging"),
             PackageLoader("assess.tagging"),
             PackageLoader("assess.scoring"),
+            PackageLoader("authenticator.frontend"),
             PrefixLoader({"govuk_frontend_jinja": PackageLoader("govuk_frontend_jinja")}),
         ]
     )
@@ -120,8 +127,27 @@ def create_app() -> Flask:  # noqa: C901
     # Initialise logging
     logging.init_app(flask_app)
 
+    # Initialize sqs extended client
+    create_sqs_extended_client(flask_app)
+    # Initialise Sessions
+    session = Session()
+    session.init_app(flask_app)
+
+    # Initialise Redis Magic Links Store
+    redis_mlinks.init_app(flask_app)
+
     # Configure application security with Talisman
     Talisman(flask_app, **Config.TALISMAN_SETTINGS)
+
+    # This section is needed for url_for("foo", _external=True) to
+    # automatically generate http scheme when this sample is
+    # running on localhost, and to generate https scheme when it is
+    # deployed behind reversed proxy.
+    # See also #proxy_setups section at
+    # flask.palletsprojects.com/en/1.0.x/deploying/wsgi-standalone
+    from werkzeug.middleware.proxy_fix import ProxyFix
+
+    flask_app.wsgi_app = ProxyFix(flask_app.wsgi_app, x_proto=1, x_host=1)
 
     csrf = CSRFProtect()
     csrf.init_app(flask_app)
@@ -143,6 +169,15 @@ def create_app() -> Flask:  # noqa: C901
     from assess.shared.routes import shared_bp
     from assess.tagging.routes import tagging_bp
     from common.error_routes import internal_server_error, not_found
+    from authenticator.frontend.default.routes import (
+        default_bp as authenticator_default_bp,
+    )
+    from authenticator.frontend.magic_links.routes import magic_links_bp
+    from authenticator.frontend.sso.routes import sso_bp
+    from authenticator.frontend.user.routes import user_bp
+    from authenticator.api.magic_links.routes import api_magic_link_bp
+    from authenticator.api.session.auth_session import api_sessions_bp
+    from authenticator.api.sso.routes import api_sso_bp
 
     flask_app.register_error_handler(404, not_found)
     flask_app.register_error_handler(500, internal_server_error)
@@ -158,6 +193,14 @@ def create_app() -> Flask:  # noqa: C901
     flask_app.register_blueprint(flagging_bp, host=flask_app.config["ASSESS_HOST"])
     flask_app.register_blueprint(scoring_bp, host=flask_app.config["ASSESS_HOST"])
     flask_app.register_blueprint(assessment_bp, host=flask_app.config["ASSESS_HOST"])
+
+    flask_app.register_blueprint(authenticator_default_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(magic_links_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(sso_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(user_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(api_magic_link_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(api_sso_bp, host=flask_app.config["AUTH_HOST"])
+    flask_app.register_blueprint(api_sessions_bp, host=flask_app.config["AUTH_HOST"])
 
     @flask_app.url_defaults
     def inject_host_from_current_request(endpoint, values):
@@ -194,6 +237,17 @@ def create_app() -> Flask:  # noqa: C901
                 ),
                 support_desk_assess=Config.SUPPORT_DESK_ASSESS,
             )
+        elif request.host == current_app.config["AUTH_HOST"]:
+            query_params = urlencode({"fund": request.args.get("fund", ""), "round": request.args.get("round", "")})
+            return dict(
+                stage="beta",
+                service_meta_author="Ministry of Housing, Communities and Local Government",
+                accessibility_statement_url=urljoin(Config.APPLICANT_FRONTEND_HOST, "/accessibility_statement"),  # noqa
+                cookie_policy_url=urljoin(Config.APPLICANT_FRONTEND_HOST, "/cookie_policy"),
+                contact_us_url=urljoin(Config.APPLICANT_FRONTEND_HOST, f"/contact_us?{query_params}"),
+                privacy_url=urljoin(Config.APPLICANT_FRONTEND_HOST, f"/privacy?{query_params}"),
+                feedback_url=urljoin(Config.APPLICANT_FRONTEND_HOST, f"/feedback?{query_params}"),
+            )
 
     @flask_app.context_processor
     def utility_processor():
@@ -210,9 +264,14 @@ def create_app() -> Flask:  # noqa: C901
                         request.view_args,
                         request.args,
                     )
-
             if fund:
                 return gettext("Apply for") + " " + fund.title
+            elif (
+                request.args
+                and (return_app := request.args.get("return_app"))
+                and request.host == current_app.config["AUTH_HOST"]
+            ):
+                return Config.SAFE_RETURN_APPS[return_app].service_title
 
             return gettext("Access Funding")
 
@@ -299,8 +358,35 @@ def create_app() -> Flask:  # noqa: C901
 
     health = Healthcheck(flask_app)
     health.add_check(FlaskRunningChecker())
+    health.add_check(RedisChecker(redis_mlinks))
 
     return flask_app
+
+
+def create_sqs_extended_client(flask_app):
+    if (
+        getenv("AWS_ACCESS_KEY_ID", "Access Key Not Available") == "Access Key Not Available"
+        and getenv("AWS_SECRET_ACCESS_KEY", "Secret Key Not Available") == "Secret Key Not Available"
+    ):
+        flask_app.extensions["sqs_extended_client"] = SQSExtendedClient(
+            region_name=Config.AWS_REGION,
+            endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
+            large_payload_support=Config.AWS_MSG_BUCKET_NAME,
+            always_through_s3=True,
+            delete_payload_from_s3=True,
+            logger=flask_app.logger,
+        )
+    else:
+        flask_app.extensions["sqs_extended_client"] = SQSExtendedClient(
+            aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=Config.AWS_SECRET_ACCESS_KEY,
+            region_name=Config.AWS_REGION,
+            endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
+            large_payload_support=Config.AWS_MSG_BUCKET_NAME,
+            always_through_s3=True,
+            delete_payload_from_s3=True,
+            logger=flask_app.logger,
+        )
 
 
 app = create_app()

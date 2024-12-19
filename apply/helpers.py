@@ -146,16 +146,18 @@ def format_rehydrate_payload(
 
 
 def find_round_short_name_in_request():
-    if round_short_name := request.view_args.get("round_short_name") or request.args.get("round"):
+    view_args = request.view_args or {}
+    if round_short_name := view_args.get("round_short_name") or request.args.get("round"):
         return round_short_name
     else:
         return None
 
 
 def find_round_id_in_request():
+    view_args = request.view_args or {}
     if (
         application_id := request.args.get("application_id")
-        or request.view_args.get("application_id")
+        or view_args.get("application_id")
         or request.form.get("application_id")
     ):
         application = get_application_data(application_id)
@@ -165,11 +167,12 @@ def find_round_id_in_request():
 
 
 def find_fund_id_in_request():
-    if fund_id := request.view_args.get("fund_id") or request.args.get("fund_id"):
+    view_args = request.view_args or {}
+    if fund_id := view_args.get("fund_id") or request.args.get("fund_id"):
         return fund_id
     elif (
         application_id := request.args.get("application_id")
-        or request.view_args.get("application_id")
+        or view_args.get("application_id")
         or request.form.get("application_id")
     ):
         application = get_application_data(application_id)
@@ -179,7 +182,8 @@ def find_fund_id_in_request():
 
 
 def find_fund_short_name_in_request():
-    if (fund_short_name := request.view_args.get("fund_short_name") or request.args.get("fund")) and str.upper(
+    view_args = request.view_args or {}
+    if (fund_short_name := view_args.get("fund_short_name") or request.args.get("fund")) and str.upper(
         fund_short_name
     ) in get_all_fund_short_names(get_ttl_hash(Config.LRU_CACHE_TIME)):
         return fund_short_name
