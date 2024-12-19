@@ -16,7 +16,7 @@ def signed_out(status):
     return_path = request.args.get("return_path")
     return (
         render_template(
-            "sso_signed_out.html",
+            "authenticator/sso/sso_signed_out.html",
             status=status,
             login_url=url_for("api_sso.login", return_app=return_app, return_path=return_path),
         ),

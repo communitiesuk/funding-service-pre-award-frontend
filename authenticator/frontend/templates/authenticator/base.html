@@ -7,15 +7,15 @@
 {% block pageTitle %}{{ [pageHeading, base_title]|join(' - ') if pageHeading else base_title }}{% endblock pageTitle %}
 
 {% block head %}
-  {% include "head.html" %}
+  {% include "authenticator/head.html" %}
 {% endblock head %}
 
 {% block header %}
-  {% include "header.html" %}
+  {% include "authenticator/header.html" %}
 {% endblock header %}
 
 {% block footer %}
-  {% include "footer.html" %}
+  {% include "authenticator/footer.html" %}
 {% endblock footer %}
 
 {% block bodyEnd %}

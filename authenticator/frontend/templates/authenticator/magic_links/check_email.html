@@ -1,9 +1,9 @@
 {%- from "govuk_frontend_jinja/components/input/macro.html" import govukInput -%}
 {%- from "govuk_frontend_jinja/components/button/macro.html" import govukButton -%}
 {%- from "govuk_frontend_jinja/components/panel/macro.html" import govukPanel -%}
-{% from "partials/migration_banner.html" import migration_banner %}
+{% from "authenticator/partials/migration_banner.html" import migration_banner %}
 
-{% extends "base.html" %}
+{% extends "authenticator/base.html" %}
 {% set pageHeading %}
 {% if email %}
   {% trans %}Email sent{% endtrans %}
