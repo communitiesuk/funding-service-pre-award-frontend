@@ -40,7 +40,7 @@ profile="jinja2"
 [dependency-groups]
 dev = [
     "beautifulsoup4==4.12.3",
-    "debugpy==1.6.7",
+    "debugpy==1.8.11",
     "deepdiff==5.8.1",
     "dparse==0.6.4",
     "invoke==2.0.0",
