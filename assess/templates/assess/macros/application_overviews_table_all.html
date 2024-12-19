@@ -92,8 +92,9 @@ sort_column, sort_order, tag_option_groups, tags, tagging_purpose_config, users)
         <input type="checkbox" name="selected_assessments" aria-labelledby="project-name-{{ loop.index }}" value="{{ overview.application_id }}" {% if overview.application_id in display_config["selected_assessments"] %}checked{% endif %} />
       </td>
       {% endif %}
-      <td class="govuk-table__cell">{{ overview.short_id[-6:] }}</td>
-      <td class="govuk-table__cell"><a class="govuk-link" data-qa="project_name" id="project-name-{{ loop.index }}"
+      {% set application_reference=overview.short_id[-6:] %}
+      <td class="govuk-table__cell">{{ application_reference }}</td>
+      <td class="govuk-table__cell"><a class="govuk-link" data-testid="{{application_reference}}" data-qa="project_name" id="project-name-{{ loop.index }}"
           href="{{ url_for('assessment_bp.application',application_id=overview.application_id) }}">{{
           overview.project_name }}</a></td>
       <td class="govuk-table__cell">£{{ "{:,.2f}".format(overview.funding_amount_requested|int|round) }}</td>
