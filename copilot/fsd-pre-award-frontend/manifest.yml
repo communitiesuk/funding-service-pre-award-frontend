@@ -17,6 +17,7 @@ http:
   alias:
     - frontend.${COPILOT_ENVIRONMENT_NAME}.access-funding.test.levellingup.gov.uk
     - assessment.${COPILOT_ENVIRONMENT_NAME}.access-funding.test.levellingup.gov.uk
+    - authenticator.${COPILOT_ENVIRONMENT_NAME}.access-funding.test.levellingup.gov.uk
 
 # Configuration for your containers and service.
 image:
@@ -166,6 +167,7 @@ environments:
       alias:
         - "frontend.access-funding.levellingup.gov.uk"
         - "assessment.access-funding.levellingup.gov.uk"
+        - "authenticator.access-funding.levellingup.gov.uk"
       hosted_zone: Z0686469NF3ZJTU9I02M
     variables:
       ALLOW_ASSESSMENT_LOGIN_VIA_MAGIC_LINK: false
