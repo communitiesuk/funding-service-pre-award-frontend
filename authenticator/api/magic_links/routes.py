@@ -5,10 +5,10 @@ from urllib.parse import urlencode, urljoin
 from flask import current_app, g, redirect, request, url_for
 from flask.views import MethodView
 from fsd_utils.authentication.decorators import login_requested
-from models.account import AccountMethods
-from models.magic_link import MagicLinkMethods
 
-from api.session.auth_session import AuthSessionBase
+from authenticator.api.session.auth_session import AuthSessionBase
+from authenticator.models.account import AccountMethods
+from authenticator.models.magic_link import MagicLinkMethods
 from common.blueprints import Blueprint
 from config import Config
 

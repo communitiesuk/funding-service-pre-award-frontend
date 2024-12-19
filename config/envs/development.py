@@ -15,6 +15,9 @@ class DevelopmentConfig(DefaultConfig):
     FSD_LOGGING_LEVEL = logging.DEBUG
     USE_LOCAL_DATA = strtobool(getenv("USE_LOCAL_DATA", "True"))
     SESSION_COOKIE_SECURE = False
+    FLASK_ENV = "development"
+    AUTO_REDIRECT_LOGIN = True
+    DISABLE_NOTIFICATION_SERVICE = False  # Toggle on if you have no notify api key.
 
     SESSION_COOKIE_DOMAIN = getenv("SESSION_COOKIE_DOMAIN")
 
@@ -23,6 +26,10 @@ class DevelopmentConfig(DefaultConfig):
         _test_public_key_path = DefaultConfig.FLASK_ROOT + "/tests/keys/rsa256/public.pem"
         with open(_test_public_key_path, mode="rb") as public_key_file:
             RSA256_PUBLIC_KEY = public_key_file.read()
+    if not hasattr(DefaultConfig, "RSA256_PRIVATE_KEY"):
+        _test_private_key_path = DefaultConfig.FLASK_ROOT + "/tests/keys/rsa256/private.pem"
+        with open(_test_private_key_path, mode="rb") as private_key_file:
+            RSA256_PRIVATE_KEY = private_key_file.read()
 
     # LRU cache settings
     LRU_CACHE_TIME = 1  # in seconds
@@ -99,3 +106,8 @@ class DevelopmentConfig(DefaultConfig):
     AWS_REGION = "eu-west-2"
 
     ASSETS_AUTO_BUILD = True
+
+    # Connexion
+    CONNEXION_OPTIONS = {
+        "swagger_url": "/docs",
+    }

@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template, request, url_for
+from flask import render_template, request, url_for
+
+from common.blueprints import Blueprint
 
 sso_bp = Blueprint(
     "sso_bp",
@@ -14,7 +16,7 @@ def signed_out(status):
     return_path = request.args.get("return_path")
     return (
         render_template(
-            "sso_signed_out.html",
+            "authenticator/sso/sso_signed_out.html",
             status=status,
             login_url=url_for("api_sso.login", return_app=return_app, return_path=return_path),
         ),

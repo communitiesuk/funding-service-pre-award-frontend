@@ -5,9 +5,9 @@ import requests
 from flask import abort, current_app, make_response, redirect, request, session
 from flask.views import MethodView
 from fsd_utils import clear_sentry
-from models.account import AccountMethods
 
-from api.session.auth_session import AuthSessionBase
+from authenticator.api.session.auth_session import AuthSessionBase
+from authenticator.models.account import AccountMethods
 from common.blueprints import Blueprint
 from config import Config
 
