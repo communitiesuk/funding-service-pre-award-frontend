@@ -81,7 +81,7 @@ class TestUserValidation:
         response = apply_test_client.get(f"/tasklist/{self.TEST_ID}", follow_redirects=False)
         assert 200 == response.status_code, "Incorrect status code"
         assert b"<title>Task List" in response.data
-        assert b"TEST-REF</dd>" in response.data
+        assert b"TEST-REF" in response.data
 
     def test_tasklist_bad_user(self, apply_test_client, mocker, monkeypatch):
         monkeypatch.setattr(

@@ -139,6 +139,7 @@ def format_rehydrate_payload(
     formatted_data["metadata"]["fund_name"] = fund_name
     formatted_data["metadata"]["round_name"] = round_name
     formatted_data["metadata"]["has_eligibility"] = has_eligibility
+    formatted_data["metadata"]["feedback_message"] = form_data.get("feedback_message") if form_data else None
     if round_close_notification_url is not None:
         formatted_data["metadata"]["round_close_notification_url"] = round_close_notification_url
 
