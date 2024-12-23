@@ -75,7 +75,7 @@ jobs:
       FS_BASIC_AUTH_USERNAME: ${{ secrets.FS_BASIC_AUTH_USERNAME }}
       FS_BASIC_AUTH_PASSWORD: ${{ secrets.FS_BASIC_AUTH_PASSWORD }}
       AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
-    uses: communitiesuk/funding-service-design-workflows/.github/workflows/post-deploy.yml@main
+    uses: communitiesuk/funding-service-design-workflows/.github/workflows/post-deploy.yml@proto/fspt-140-python-e2e
     with:
       run_performance_tests: ${{ inputs.run_performance_tests || true }}
       run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || true }}
