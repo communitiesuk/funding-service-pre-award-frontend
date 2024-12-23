@@ -117,7 +117,7 @@ jobs:
 
   uat_deploy:
     needs: [ dev_deploy, post_dev_deploy_tests, test_deploy, post_test_deploy_tests, paketo_build, setup ]
-    if: ${{ always() && contains(fromJSON(needs.setup.outputs.jobs_to_run), 'test') && (! contains(needs.*.result, 'cancelled')) && (! contains(needs.*.result, 'failure') || needs.run_python_e2e_test.result == 'failure') }}
+    if: ${{ always() && contains(fromJSON(needs.setup.outputs.jobs_to_run), 'test') && ((! contains(needs.*.result, 'cancelled')) && (! contains(needs.*.result, 'failure')) || needs.run_python_e2e_test.result == 'failure') }}
     uses: communitiesuk/funding-service-design-workflows/.github/workflows/standard-deploy.yml@main
     secrets:
       AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
