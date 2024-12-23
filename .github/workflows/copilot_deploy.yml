@@ -32,7 +32,7 @@ on:
 
 jobs:
   setup:
-    uses: communitiesuk/funding-service-design-workflows/.github/workflows/determine-jobs.yml@main
+    uses: communitiesuk/funding-service-design-workflows/.github/workflows/determine-jobs.yml@test-e2e-jobs
     with:
       environment: ${{ inputs.environment }}
 
