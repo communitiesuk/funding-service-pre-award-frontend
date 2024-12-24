@@ -1,3 +1,4 @@
+{%- from "govuk_frontend_jinja/components/notification-banner/macro.html" import govukNotificationBanner -%}
 {%- from "govuk_frontend_jinja/components/tag/macro.html" import govukTag -%}
 {%- from "govuk_frontend_jinja/components/table/macro.html" import govukTable -%}
 {%- from "govuk_frontend_jinja/components/button/macro.html" import govukButton -%}
@@ -53,6 +54,14 @@ Your applications
                 {% if round["is_past_submission_deadline"] %}
                     {{ round_closed_warning(fund["fund_data"]["name"], round["round_details"]["title"], round["round_details"]["deadline"]) }}
                 {% endif %}
+                {% if 'CHANGES_REQUESTED' in round["applications"]|map(attribute='status') %}
+                    {{
+                        govukNotificationBanner({
+                            "text": "Please review updates from the Assessor"
+                        })
+                    }}
+                {% endif %}
+
                     {{ applications_table(round["applications"], round["is_past_submission_deadline"], show_language_column, fund["fund_data"]["short_name"], round["round_details"]["is_expression_of_interest"]) }}
                 {% if not round["is_past_submission_deadline"] %}
                     {% if round["round_details"]["has_eligibility"] %}
