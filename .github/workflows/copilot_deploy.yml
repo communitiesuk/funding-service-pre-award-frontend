@@ -28,6 +28,11 @@ on:
         default: true
         type: boolean
         description: Run e2e tests (application)
+      run_python_e2e_tests:
+        required: false
+        default: true
+        type: boolean
+        description: Run python e2e tests
   push:
 
 jobs:
@@ -80,6 +85,7 @@ jobs:
       run_performance_tests: ${{ inputs.run_performance_tests || true }}
       run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || true }}
       run_e2e_tests_application: ${{ inputs.run_e2e_tests_application || true }}
+      run_e2e_tests_python: ${{ inputs.run_python_e2e_tests || true }}
       app_name: pre-award-frontend
       environment: dev
 
@@ -111,6 +117,7 @@ jobs:
       run_performance_tests: ${{ inputs.run_performance_tests || false }}
       run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || true }}
       run_e2e_tests_application: ${{ inputs.run_e2e_tests_application || true }}
+      run_e2e_tests_python: ${{ inputs.run_python_e2e_tests || true }}
       app_name: pre-award-frontend
       environment: test
 
@@ -142,6 +149,7 @@ jobs:
       run_performance_tests: ${{ inputs.run_performance_tests || false }}
       run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || true }}
       run_e2e_tests_application: ${{ inputs.run_e2e_tests_application || true }}
+      run_e2e_tests_python: false  # not available in UAT environment
       app_name: pre-award-frontend
       environment: uat
 
